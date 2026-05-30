@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight, Plus, Image as ImageIcon, Layers } from "lucide-react";
 import { getWorkspace, getWorkspaceStyles } from "@/lib/data/workspaces";
+import { ReferencesStat } from "@/components/ReferencesStat";
 
 export default async function WorkspacePage({
   params,
@@ -52,12 +53,13 @@ export default async function WorkspacePage({
       </Link>
 
       {/* Stats / Quick info */}
-      <div className="grid md:grid-cols-3 gap-4 mb-12">
+      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
         <StatCard
           label="Estilos signature"
           value={styles.length.toString()}
           icon={<Layers className="h-4 w-4" />}
         />
+        <ReferencesStat workspaceId={workspace.id} />
         <StatCard
           label="Créditos del mes"
           value={`${workspace.monthly_credit_limit}`}

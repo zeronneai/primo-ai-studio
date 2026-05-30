@@ -25,12 +25,25 @@ export type WorkspaceStyle = {
   sort_order: number;
 };
 
+export type ReferenceAnalysis = {
+  dominant_colors: string[];
+  composition: string;
+  lighting_style: string;
+  mood: string;
+  typography_style: string;
+  recurring_elements: string[];
+  quality_score: number; // 1-10
+};
+
 export type ReferenceAsset = {
   id: string;
   workspace_id: string;
   image_url: string;
   style_slug: string | null;
   notes: string;
+  is_user_uploaded?: boolean;
+  analysis?: ReferenceAnalysis | null;
+  created_at?: string;
 };
 
 export type Generation = {
