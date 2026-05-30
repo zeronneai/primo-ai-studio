@@ -1,8 +1,12 @@
 export type WorkspaceColors = {
-  primary: string;
-  accent: string;
-  bg: string;
-  text: string;
+  primary: string; // color principal de marca
+  accent: string; // color de acción/CTA
+  accentSecondary: string; // variante / acento secundario
+  bg: string; // background general (muy oscuro, tinta primaria)
+  surface: string; // cards/superficies
+  border: string; // bordes
+  text: string; // texto principal
+  textMuted: string; // texto secundario
 };
 
 export type Workspace = {
@@ -13,6 +17,8 @@ export type Workspace = {
   brand_colors: WorkspaceColors;
   industry: string;
   monthly_credit_limit: number;
+  system_prompt?: string;
+  is_custom?: boolean;
 };
 
 export type WorkspaceStyle = {
@@ -23,6 +29,16 @@ export type WorkspaceStyle = {
   description: string;
   template_prompt: string;
   sort_order: number;
+  is_custom?: boolean;
+};
+
+export type MemberRole = "owner" | "member";
+
+export type WorkspaceMember = {
+  email: string;
+  workspace_id: string;
+  role: MemberRole;
+  added_at: string;
 };
 
 export type ReferenceAnalysis = {

@@ -1,4 +1,11 @@
 import type { Workspace, WorkspaceStyle, ReferenceAsset } from "@/types";
+// Import circular seguro: workspaces-store importa WORKSPACES/WORKSPACE_STYLES
+// de este módulo, pero solo los usa dentro de funciones (live bindings),
+// nunca en la evaluación del módulo. Aquí ocurre lo mismo.
+import {
+  getWorkspaceBySlug,
+  getStylesForWorkspace,
+} from "@/lib/data/workspaces-store";
 
 // ─────────────────────────────────────────────────────────────
 // WORKSPACES (datos pre-poblados que viven en el repo)
@@ -14,8 +21,12 @@ export const WORKSPACES: Workspace[] = [
     brand_colors: {
       primary: "#080f1e",
       accent: "#2E7AF0",
+      accentSecondary: "#5BA3F5",
       bg: "#0A1628",
+      surface: "#0F1F35",
+      border: "#1A2E4A",
       text: "#FFFFFF",
+      textMuted: "#8A9BB0",
     },
     industry: "Baseball Training",
     monthly_credit_limit: 500,
@@ -72,14 +83,15 @@ export const REFERENCE_ASSETS: ReferenceAsset[] = [
 ];
 
 // Helpers
+// En el server, el store solo ve el seed (no hay localStorage), así que el
+// comportamiento SSR es idéntico al anterior. En el cliente, además mezcla
+// los workspaces/estilos custom de localStorage (el custom tiene prioridad).
 export function getWorkspace(slug: string): Workspace | null {
-  return WORKSPACES.find((w) => w.slug === slug) ?? null;
+  return getWorkspaceBySlug(slug);
 }
 
 export function getWorkspaceStyles(workspaceId: string): WorkspaceStyle[] {
-  return WORKSPACE_STYLES.filter((s) => s.workspace_id === workspaceId).sort(
-    (a, b) => a.sort_order - b.sort_order
-  );
+  return getStylesForWorkspace(workspaceId);
 }
 
 export function getWorkspaceReferences(workspaceId: string): ReferenceAsset[] {
