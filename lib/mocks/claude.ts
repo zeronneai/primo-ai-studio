@@ -1,4 +1,4 @@
-import type { WorkspaceStyle } from "@/types";
+import type { WorkspaceStyle, ReferenceAsset } from "@/types";
 
 // ─────────────────────────────────────────────────────────────
 // CLAUDE MOCK
@@ -11,11 +11,13 @@ type MockGenerationInput = {
   context: string;
   styles: WorkspaceStyle[];
   imageProvided: boolean;
+  references?: ReferenceAsset[];
 };
 
 type MockGenerationOutput = {
   scene_description_es: string;
   styles: Record<string, string>;
+  references_used: number;
 };
 
 // Pool de descripciones de escena (variadas para que cada generación sea distinta)
@@ -44,6 +46,44 @@ function fillTemplate(
     .replace(/\[TITLE\]/g, title.toUpperCase());
 }
 
+// Devuelve el valor más frecuente de una lista (para colores dominantes)
+function mostCommon(values: string[]): string[] {
+  const counts = new Map<string, number>();
+  values.forEach((v) => counts.set(v, (counts.get(v) ?? 0) + 1));
+  return [...counts.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .map(([v]) => v);
+}
+
+/**
+ * Construye una frase de "ADN visual" a partir de los análisis de las
+ * referencias del workspace. Simula que Claude consultó las referencias:
+ * usa los colores dominantes más comunes + el mood/lighting de 1-2 refs.
+ */
+function buildReferenceContext(references: ReferenceAsset[]): string {
+  const analyzed = references.filter((r) => r.analysis);
+  if (analyzed.length === 0) return "";
+
+  const allColors = analyzed.flatMap((r) => r.analysis!.dominant_colors);
+  const topColors = mostCommon(allColors).slice(0, 3);
+
+  // Tomar mood + lighting de 1-2 referencias (las primeras analizadas)
+  const sample = analyzed.slice(0, 2);
+  const moods = sample.map((r) => r.analysis!.mood.replace(/\.$/, ""));
+  const lighting = sample[0].analysis!.lighting_style.replace(/\.$/, "");
+
+  const parts: string[] = [];
+  if (topColors.length) {
+    parts.push(`paleta dominante observada ${topColors.join(", ")}`);
+  }
+  parts.push(`iluminación tipo ${lighting.toLowerCase()}`);
+  if (moods.length) {
+    parts.push(`mood ${moods.join(" / ").toLowerCase()}`);
+  }
+
+  return `Coherente con el ADN visual del workspace (${parts.join("; ")}).`;
+}
+
 export async function mockGeneratePrompts(
   input: MockGenerationInput
 ): Promise<MockGenerationOutput> {
@@ -51,7 +91,15 @@ export async function mockGeneratePrompts(
   const latency = 1200 + Math.random() * 1300;
   await new Promise((resolve) => setTimeout(resolve, latency));
 
-  const scene = pickScene(input.title + input.context);
+  const references = input.references ?? [];
+  const referenceContext = buildReferenceContext(references);
+  const referencesUsed = references.filter((r) => r.analysis).length;
+
+  const baseScene = pickScene(input.title + input.context);
+  // Inyectar el contexto de referencias en la descripción de escena
+  const scene = referenceContext
+    ? `${baseScene}. ${referenceContext}`
+    : baseScene;
 
   const styles: Record<string, string> = {};
   input.styles.forEach((style) => {
@@ -61,5 +109,6 @@ export async function mockGeneratePrompts(
   return {
     scene_description_es: scene,
     styles,
+    references_used: referencesUsed,
   };
 }

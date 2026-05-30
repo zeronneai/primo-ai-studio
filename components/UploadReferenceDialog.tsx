@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import { Upload, Loader2, X, Sparkles, ImagePlus } from "lucide-react";
 import { saveReference } from "@/lib/data/references-store";
-import { generateId } from "@/lib/utils";
+import { downscaleImage, generateId } from "@/lib/utils";
 import type {
   Workspace,
   WorkspaceStyle,
@@ -63,11 +63,14 @@ export function UploadReferenceDialog({
     setError(null);
 
     try {
+      // Redimensionar antes de enviar/guardar para no saturar localStorage
+      const compressed = await downscaleImage(imageDataUrl);
+
       const res = await fetch("/api/analyze-reference", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          imageDataUrl,
+          imageDataUrl: compressed,
           workspaceSlug: workspace.slug,
           styleSlug: styleSlug || null,
           notes,
@@ -80,7 +83,7 @@ export function UploadReferenceDialog({
       const reference: ReferenceAsset = {
         id: generateId("ref"),
         workspace_id: workspace.id,
-        image_url: imageDataUrl,
+        image_url: compressed,
         style_slug: styleSlug || null,
         notes: notes.trim() || "Referencia subida por el usuario",
         is_user_uploaded: true,

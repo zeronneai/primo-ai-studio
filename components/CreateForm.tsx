@@ -4,12 +4,19 @@ import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Upload, Loader2, Sparkles, Image as ImageIcon, Copy, Check, Wand2 } from "lucide-react";
 import { saveGeneration } from "@/lib/data/generations-store";
-import { generateId } from "@/lib/utils";
-import type { Workspace, WorkspaceStyle, Generation } from "@/types";
+import { getReferences } from "@/lib/data/references-store";
+import { downscaleImage, generateId } from "@/lib/utils";
+import type {
+  Workspace,
+  WorkspaceStyle,
+  Generation,
+  ReferenceAsset,
+} from "@/types";
 
 type GenerationResult = {
   scene_description_es: string;
   styles: Record<string, string>;
+  references_used?: number;
 };
 
 export function CreateForm({
@@ -61,6 +68,20 @@ export function CreateForm({
     setGeneratedImages({});
 
     try {
+      // El server no puede leer localStorage: mandamos las referencias
+      // (seed + subidas) para que Claude las "consulte". Omitimos image_url
+      // (dataURLs pesados) porque el análisis es lo único que se usa.
+      const references = getReferences(workspace.id).map(
+        (ref: ReferenceAsset) => ({
+          id: ref.id,
+          workspace_id: ref.workspace_id,
+          style_slug: ref.style_slug,
+          notes: ref.notes,
+          is_user_uploaded: ref.is_user_uploaded,
+          analysis: ref.analysis,
+        })
+      );
+
       const res = await fetch("/api/generate-prompts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -70,6 +91,7 @@ export function CreateForm({
           context,
           styleSlugs: selectedStyles,
           hasImage: !!imageFile,
+          references,
         }),
       });
 
@@ -111,12 +133,16 @@ export function CreateForm({
     setTimeout(() => setCopiedPrompt(null), 2000);
   }
 
-  function handleSaveAndGoToHistory() {
+  async function handleSaveAndGoToHistory() {
     if (!result) return;
+    // Redimensionar la imagen fuente antes de persistir en localStorage
+    const compressedSource = imagePreview
+      ? await downscaleImage(imagePreview)
+      : null;
     const generation: Generation = {
       id: generateId("gen"),
       workspace_id: workspace.id,
-      source_image_url: imagePreview,
+      source_image_url: compressedSource,
       title,
       context,
       scene_description: result.scene_description_es,
@@ -268,6 +294,23 @@ export function CreateForm({
             <p className="text-primo-text italic">
               &ldquo;{result.scene_description_es}&rdquo;
             </p>
+            {!!result.references_used && result.references_used > 0 && (
+              <div
+                className="inline-flex items-center gap-1.5 mt-3 text-xs px-2.5 py-1 rounded-full border"
+                style={{
+                  color: workspace.brand_colors.accent,
+                  borderColor: workspace.brand_colors.accent + "40",
+                  backgroundColor: workspace.brand_colors.accent + "10",
+                }}
+              >
+                <Sparkles className="h-3 w-3" />
+                Generado usando {result.references_used}{" "}
+                {result.references_used === 1
+                  ? "referencia visual"
+                  : "referencias visuales"}{" "}
+                del workspace
+              </div>
+            )}
           </div>
 
           {/* Prompts */}
