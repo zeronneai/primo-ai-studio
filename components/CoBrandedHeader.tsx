@@ -1,25 +1,25 @@
 import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
-import { Sparkles } from "lucide-react";
 import type { Workspace } from "@/types";
+
+const PRIMO_LOGO_URL =
+  "https://res.cloudinary.com/dsprn0ew4/image/upload/v1778810517/replicame_ese_logo_sin_a%C3%B1adir_202605142001_xo3xpe.jpg";
 
 export function CoBrandedHeader({ workspace }: { workspace: Workspace }) {
   return (
     <header className="border-b border-primo-border bg-primo-bg/80 backdrop-blur-sm sticky top-0 z-50">
       <div className="container mx-auto flex h-16 items-center justify-between px-6">
         {/* Izquierda: PRIMO AI STUDIO */}
-        <Link href="/" className="flex items-center gap-2 group">
-          <div className="h-8 w-8 rounded-md bg-gradient-to-br from-primo-accent to-purple-700 flex items-center justify-center group-hover:scale-105 transition-transform">
-            <Sparkles className="h-4 w-4 text-white" />
-          </div>
-          <div className="flex flex-col">
-            <span className="font-display text-base tracking-wider leading-none">
-              PRIMO AI STUDIO
-            </span>
-            <span className="text-[10px] text-primo-muted leading-tight mt-0.5">
-              powered by Claude
-            </span>
-          </div>
+        <Link href="/" className="flex items-center gap-3 group">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={PRIMO_LOGO_URL}
+            alt="Primo AI Studio"
+            className="h-10 w-auto rounded-md group-hover:scale-105 transition-transform"
+          />
+          <span className="font-display text-base tracking-wider leading-none">
+            PRIMO AI STUDIO
+          </span>
         </Link>
 
         {/* Centro: divider visual */}

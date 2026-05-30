@@ -12,8 +12,8 @@
 
 html,
 body {
-  background: #0a0a0b;
-  color: #fafafa;
+  background: #0F1E2D;
+  color: #FAFAFA;
   font-family: var(--font-inter);
   -webkit-font-smoothing: antialiased;
 }
@@ -28,14 +28,14 @@ body {
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #0a0a0b;
+  background: #0F1E2D;
 }
 ::-webkit-scrollbar-thumb {
-  background: #2a2a2e;
+  background: #2A3E4F;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3a3a3e;
+  background: #3A4E5F;
 }
 
 /* Workspace accent variable inherited */
@@ -58,9 +58,9 @@ body {
 .shimmer {
   background: linear-gradient(
     90deg,
-    #1f1f23 0%,
-    #2a2a2e 50%,
-    #1f1f23 100%
+    #1A2E3F 0%,
+    #2A3E4F 50%,
+    #1A2E3F 100%
   );
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;

@@ -1,16 +1,22 @@
 import Link from "next/link";
 import { ArrowRight, Sparkles, Zap, Shield } from "lucide-react";
 
+const PRIMO_LOGO_URL =
+  "https://res.cloudinary.com/dsprn0ew4/image/upload/v1778810517/replicame_ese_logo_sin_a%C3%B1adir_202605142001_xo3xpe.jpg";
+
 export default function LandingPage() {
   return (
     <main className="min-h-screen bg-primo-bg">
       {/* Header */}
       <header className="border-b border-primo-border">
         <div className="container mx-auto flex h-16 items-center justify-between px-6">
-          <div className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-md bg-gradient-to-br from-primo-accent to-purple-700 flex items-center justify-center">
-              <Sparkles className="h-4 w-4 text-white" />
-            </div>
+          <div className="flex items-center gap-3">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={PRIMO_LOGO_URL}
+              alt="Primo AI Studio"
+              className="h-10 w-auto rounded-md"
+            />
             <span className="font-display text-xl tracking-wider">
               PRIMO AI STUDIO
             </span>
@@ -24,7 +30,7 @@ export default function LandingPage() {
             </Link>
             <Link
               href="/sign-up"
-              className="text-sm bg-primo-accent hover:bg-purple-600 text-white px-4 py-2 rounded-md transition-colors"
+              className="text-sm bg-primo-accent hover:bg-primo-accent/90 text-primo-bg font-medium px-4 py-2 rounded-md transition-colors"
             >
               Empezar
             </Link>
@@ -55,7 +61,7 @@ export default function LandingPage() {
           <div className="flex items-center justify-center gap-4">
             <Link
               href="/torque"
-              className="inline-flex items-center gap-2 bg-primo-accent hover:bg-purple-600 text-white px-6 py-3 rounded-md font-medium transition-colors"
+              className="inline-flex items-center gap-2 bg-primo-accent hover:bg-primo-accent/90 text-primo-bg px-6 py-3 rounded-md font-medium transition-colors"
             >
               Ver demo de Torque
               <ArrowRight className="h-4 w-4" />
