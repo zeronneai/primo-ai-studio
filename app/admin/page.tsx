@@ -17,7 +17,9 @@ export default function AdminWorkspacesPage() {
     <div className="p-8 max-w-6xl mx-auto">
       <div className="flex items-start justify-between mb-8 gap-4">
         <div>
-          <h1 className="font-display text-4xl tracking-tight">WORKSPACES</h1>
+          <h1 className="font-bold text-3xl text-primo-navy tracking-tight">
+            Workspaces
+          </h1>
           <p className="text-primo-muted text-sm mt-2">
             {count === null
               ? "Cargando…"
@@ -28,7 +30,7 @@ export default function AdminWorkspacesPage() {
         </div>
         <Link
           href="/admin/nuevo"
-          className="inline-flex items-center gap-2 bg-primo-accent text-primo-bg px-4 py-2.5 rounded-md font-medium hover:opacity-90 transition-opacity shrink-0"
+          className="inline-flex items-center gap-2 bg-primo-accent text-white px-6 py-3 rounded-full font-semibold hover:opacity-90 transition-opacity shrink-0"
         >
           <Plus className="h-4 w-4" />
           Nuevo workspace

@@ -14,19 +14,19 @@ export function UnauthorizedAccess() {
     <div className="min-h-screen bg-primo-bg text-primo-text flex flex-col items-center justify-center p-8 text-center">
       <div className="flex-1 flex flex-col items-center justify-center">
         <div className="h-16 w-16 rounded-full bg-primo-surface border border-primo-border flex items-center justify-center mb-6">
-          <ShieldX className="h-8 w-8 text-primo-accent" />
+          <ShieldX className="h-8 w-8 text-primo-muted" />
         </div>
-        <h1 className="font-display text-4xl tracking-tight mb-3">
-          NO TIENES ACCESO A ESTE WORKSPACE
+        <h1 className="font-bold text-2xl md:text-3xl text-primo-navy tracking-tight mb-3">
+          No tienes acceso a este workspace
         </h1>
         <p className="text-primo-muted max-w-md mb-8 leading-relaxed">
           Si crees que esto es un error, contacta a tu administrador. Si eres
           administrador, agrega tu email al workspace desde{" "}
-          <span className="font-mono text-primo-text">/admin</span>.
+          <span className="font-mono text-primo-navy">/admin</span>.
         </p>
         <Link
           href="/"
-          className="bg-primo-accent text-primo-bg px-5 py-2.5 rounded-md font-medium hover:opacity-90 transition-opacity"
+          className="bg-primo-accent text-white px-6 py-3 rounded-full font-semibold hover:opacity-90 transition-opacity"
         >
           Volver al inicio
         </Link>

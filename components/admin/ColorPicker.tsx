@@ -47,7 +47,7 @@ export function ColorPicker({
         <p className="text-[11px] text-primo-muted mt-1">{helperText}</p>
       )}
       {!valid && (
-        <p className="text-[11px] text-red-400 mt-1">
+        <p className="text-[11px] text-red-500 mt-1">
           Formato inválido (usa #RRGGBB)
         </p>
       )}

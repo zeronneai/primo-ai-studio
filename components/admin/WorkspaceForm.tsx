@@ -36,7 +36,7 @@ const COLOR_FIELDS: { key: ColorKey; label: string; helper?: string }[] = [
 ];
 
 const inputCls =
-  "w-full bg-primo-bg border border-primo-border rounded-md px-3 py-2.5 text-sm text-primo-text placeholder:text-primo-muted focus:outline-none focus:border-primo-accent transition-colors";
+  "w-full bg-primo-surface border border-primo-border rounded-md px-3 py-2.5 text-sm text-primo-text placeholder:text-primo-muted focus:outline-none focus:border-primo-accent transition-colors";
 
 function emptyStyle(workspaceId: string, sortOrder: number): WorkspaceStyle {
   return {
@@ -310,7 +310,7 @@ export function WorkspaceForm({
           <button
             type="button"
             onClick={() => router.push("/admin")}
-            className="inline-flex items-center gap-2 text-sm text-primo-muted hover:text-primo-text px-4 py-2.5 transition-colors"
+            className="inline-flex items-center gap-2 text-sm border border-primo-border text-primo-navy hover:bg-primo-surfaceAlt px-5 py-2.5 rounded-full transition-colors"
           >
             <X className="h-4 w-4" />
             Cancelar
@@ -319,7 +319,7 @@ export function WorkspaceForm({
             type="button"
             onClick={handleSave}
             disabled={saving}
-            className="inline-flex items-center gap-2 bg-primo-accent text-primo-bg px-5 py-2.5 rounded-md font-medium hover:opacity-90 transition-opacity disabled:opacity-50"
+            className="inline-flex items-center gap-2 bg-primo-accent text-white px-6 py-2.5 rounded-full font-semibold hover:opacity-90 transition-opacity disabled:opacity-50"
           >
             <Save className="h-4 w-4" />
             {saving ? "Guardando…" : "Guardar workspace"}
@@ -348,7 +348,7 @@ function Section({
 }) {
   return (
     <section>
-      <h2 className="font-display text-xl tracking-tight mb-4 pb-2 border-b border-primo-border">
+      <h2 className="font-bold text-xl text-primo-navy mb-4 pb-2 border-b border-primo-border">
         {title}
       </h2>
       {children}

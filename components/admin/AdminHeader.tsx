@@ -18,10 +18,10 @@ export function AdminHeader() {
             alt="Primo"
             className="h-9 w-auto rounded-md group-hover:scale-105 transition-transform"
           />
-          <span className="font-display text-lg tracking-wider leading-none">
+          <span className="font-bold text-lg tracking-tight leading-none text-primo-navy">
             PRIMO ADMIN
           </span>
-          <span className="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full bg-primo-accent/15 text-primo-accent">
+          <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-primo-accent/10 text-primo-accent border border-primo-accent/30">
             <ShieldCheck className="h-3 w-3" />
             Super Admin
           </span>
@@ -31,7 +31,7 @@ export function AdminHeader() {
         <div className="flex items-center gap-4">
           <Link
             href="/"
-            className="inline-flex items-center gap-1.5 text-sm text-primo-muted hover:text-primo-text transition-colors"
+            className="inline-flex items-center gap-1.5 text-sm text-primo-muted hover:text-primo-navy transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
             <span className="hidden sm:inline">Volver al sitio</span>

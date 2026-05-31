@@ -110,7 +110,7 @@ function WorkspaceRow({
   const accent = workspace.brand_colors.accent;
 
   return (
-    <tr className="border-b border-primo-border last:border-0 hover:bg-primo-bg/40 transition-colors">
+    <tr className="border-b border-primo-border last:border-0 hover:bg-primo-surfaceAlt/40 transition-colors">
       {/* Logo + nombre + badge */}
       <td className="px-4 py-3">
         <div className="flex items-center gap-3">
@@ -119,7 +119,7 @@ function WorkspaceRow({
             <img
               src={workspace.logo_url}
               alt={workspace.name}
-              className="h-9 w-9 rounded-md object-contain bg-primo-bg"
+              className="h-9 w-9 rounded-md object-contain bg-primo-surfaceAlt"
             />
           ) : (
             <div
@@ -135,11 +135,11 @@ function WorkspaceRow({
                 {workspace.name}
               </span>
               {isCustom ? (
-                <span className="text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-primo-accent/15 text-primo-accent font-medium">
+                <span className="text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-primo-accentYellow/20 text-primo-navy font-medium">
                   Custom
                 </span>
               ) : (
-                <span className="text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-primo-border text-primo-muted font-medium">
+                <span className="text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-primo-surfaceAlt text-primo-muted font-medium">
                   Demo
                 </span>
               )}
@@ -160,7 +160,7 @@ function WorkspaceRow({
         <div className="flex items-center justify-end gap-1">
           <Link
             href={`/${workspace.slug}`}
-            className="inline-flex items-center gap-1.5 text-xs text-primo-muted hover:text-primo-text px-2 py-1.5 rounded-md hover:bg-primo-bg transition-colors"
+            className="inline-flex items-center gap-1.5 text-xs text-primo-navy border border-primo-border bg-primo-surface hover:bg-primo-surfaceAlt px-2.5 py-1.5 rounded-md transition-colors"
             title="Ver workspace"
           >
             <Eye className="h-3.5 w-3.5" />
@@ -169,7 +169,7 @@ function WorkspaceRow({
 
           <Link
             href={`/admin/${workspace.id}`}
-            className="inline-flex items-center gap-1.5 text-xs text-primo-muted hover:text-primo-text px-2 py-1.5 rounded-md hover:bg-primo-bg transition-colors"
+            className="inline-flex items-center gap-1.5 text-xs text-primo-navy border border-primo-border bg-primo-surface hover:bg-primo-surfaceAlt px-2.5 py-1.5 rounded-md transition-colors"
             title="Editar workspace"
           >
             <Pencil className="h-3.5 w-3.5" />
@@ -178,7 +178,7 @@ function WorkspaceRow({
 
           <Link
             href={`/admin/${workspace.id}/miembros`}
-            className="inline-flex items-center gap-1.5 text-xs text-primo-muted hover:text-primo-text px-2 py-1.5 rounded-md hover:bg-primo-bg transition-colors"
+            className="inline-flex items-center gap-1.5 text-xs text-primo-navy border border-primo-border bg-primo-surface hover:bg-primo-surfaceAlt px-2.5 py-1.5 rounded-md transition-colors"
             title="Gestionar miembros"
           >
             <Users className="h-3.5 w-3.5" />
@@ -189,7 +189,7 @@ function WorkspaceRow({
             <button
               onClick={onDelete}
               title="Eliminar workspace"
-              className="inline-flex items-center gap-1.5 text-xs text-red-400 hover:text-red-300 px-2 py-1.5 rounded-md hover:bg-primo-bg transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs text-red-600 border border-red-200 bg-red-50 hover:bg-red-100 px-2.5 py-1.5 rounded-md transition-colors"
             >
               <Trash2 className="h-3.5 w-3.5" />
             </button>
@@ -197,7 +197,7 @@ function WorkspaceRow({
             <button
               disabled
               title="No se puede eliminar el workspace demo"
-              className="inline-flex items-center gap-1.5 text-xs text-red-400/30 px-2 py-1.5 rounded-md cursor-not-allowed"
+              className="inline-flex items-center gap-1.5 text-xs text-red-300 border border-primo-border px-2.5 py-1.5 rounded-md cursor-not-allowed"
             >
               <Trash2 className="h-3.5 w-3.5" />
             </button>

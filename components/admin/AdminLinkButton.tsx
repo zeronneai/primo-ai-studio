@@ -13,7 +13,7 @@ export function AdminLinkButton() {
   return (
     <Link
       href="/admin"
-      className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-md bg-primo-accent/15 text-primo-accent hover:bg-primo-accent/25 transition-colors"
+      className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full bg-primo-accent text-white hover:opacity-90 transition-opacity"
     >
       <ShieldCheck className="h-3.5 w-3.5" />
       Admin

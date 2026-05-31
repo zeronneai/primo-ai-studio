@@ -32,13 +32,17 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     <ToastContext.Provider value={{ showToast }}>
       {children}
       {toast && (
-        <div className="fixed bottom-6 right-6 z-[200] flex items-center gap-2 bg-primo-surface border border-primo-border rounded-lg px-4 py-3 shadow-2xl fade-in">
+        <div
+          className={`fixed bottom-6 right-6 z-[200] flex items-center gap-2 rounded-xl px-4 py-3 shadow-lg fade-in text-white ${
+            toast.type === "success" ? "bg-primo-accentGreen" : "bg-red-500"
+          }`}
+        >
           {toast.type === "success" ? (
-            <Check className="h-4 w-4 text-primo-accent" />
+            <Check className="h-4 w-4" />
           ) : (
-            <AlertCircle className="h-4 w-4 text-red-400" />
+            <AlertCircle className="h-4 w-4" />
           )}
-          <span className="text-sm text-primo-text">{toast.message}</span>
+          <span className="text-sm font-medium">{toast.message}</span>
         </div>
       )}
     </ToastContext.Provider>

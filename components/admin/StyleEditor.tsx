@@ -7,7 +7,7 @@ import type { WorkspaceStyle } from "@/types";
 
 const MAX_STYLES = 5;
 const inputCls =
-  "w-full bg-primo-bg border border-primo-border rounded-md px-3 py-2 text-sm text-primo-text placeholder:text-primo-muted focus:outline-none focus:border-primo-accent transition-colors";
+  "w-full bg-primo-surface border border-primo-border rounded-md px-3 py-2 text-sm text-primo-text placeholder:text-primo-muted focus:outline-none focus:border-primo-accent transition-colors";
 
 export function StyleEditor({
   styles,
@@ -65,9 +65,9 @@ export function StyleEditor({
         return (
           <div
             key={style.id}
-            className="border border-primo-border rounded-lg overflow-hidden"
+            className="bg-primo-surfaceAlt border border-primo-border rounded-xl overflow-hidden"
           >
-            <div className="flex items-center justify-between px-4 py-3 bg-primo-bg/40">
+            <div className="flex items-center justify-between px-4 py-3">
               <button
                 type="button"
                 onClick={() => setExpandedId(isExpanded ? null : style.id)}
@@ -94,7 +94,7 @@ export function StyleEditor({
                     ? "Debe haber al menos 1 estilo"
                     : "Eliminar estilo"
                 }
-                className="text-primo-muted hover:text-red-400 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                className="text-primo-muted hover:text-red-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -175,7 +175,7 @@ export function StyleEditor({
         type="button"
         onClick={add}
         disabled={styles.length >= MAX_STYLES}
-        className="inline-flex items-center gap-2 text-sm text-primo-accent hover:opacity-80 disabled:opacity-30 disabled:cursor-not-allowed transition-opacity"
+        className="w-full inline-flex items-center justify-center gap-2 text-sm text-primo-accent border border-dashed border-primo-border hover:border-primo-accent rounded-xl py-3 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
       >
         <Plus className="h-4 w-4" />
         Agregar estilo

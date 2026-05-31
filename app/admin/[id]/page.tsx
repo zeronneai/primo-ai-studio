@@ -76,15 +76,15 @@ export default function EditWorkspacePage() {
           </Link>{" "}
           / Editar
         </div>
-        <h1 className="font-display text-4xl tracking-tight">
-          EDITAR {workspace.name.toUpperCase()}
+        <h1 className="font-bold text-3xl text-primo-navy tracking-tight">
+          Editar {workspace.name}
         </h1>
       </div>
 
       {isSeed && (
-        <div className="flex items-start gap-3 bg-primo-accent/10 border border-primo-accent/30 rounded-lg p-4 mb-8">
-          <AlertTriangle className="h-5 w-5 text-primo-accent shrink-0 mt-0.5" />
-          <p className="text-sm text-primo-text">
+        <div className="flex items-start gap-3 bg-primo-accentYellow/20 border border-primo-accentYellow rounded-lg p-4 mb-8">
+          <AlertTriangle className="h-5 w-5 text-primo-navy shrink-0 mt-0.5" />
+          <p className="text-sm text-primo-navy">
             Estás editando un workspace de demo. Los cambios solo se guardarán
             en este browser (localStorage), no en el repositorio.
           </p>

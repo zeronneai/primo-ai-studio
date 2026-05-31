@@ -53,7 +53,7 @@ export default function AdminLayout({
         </p>
         <Link
           href="/"
-          className="bg-primo-accent text-primo-bg px-5 py-2.5 rounded-md font-medium hover:opacity-90 transition-opacity"
+          className="bg-primo-accent text-white px-5 py-2.5 rounded-md font-medium hover:opacity-90 transition-opacity"
         >
           Volver al inicio
         </Link>

@@ -104,19 +104,19 @@ export default function MiembrosPage() {
       {/* Breadcrumb + título */}
       <div className="mb-6">
         <div className="text-sm text-primo-muted mb-2">
-          <Link href="/admin" className="hover:text-primo-text transition-colors">
+          <Link href="/admin" className="hover:text-primo-navy transition-colors">
             Workspaces
           </Link>{" "}
           / {workspace.name} / Miembros
         </div>
-        <h1 className="font-display text-4xl tracking-tight">
-          MIEMBROS DE {workspace.name.toUpperCase()}
+        <h1 className="font-bold text-3xl text-primo-navy tracking-tight">
+          Miembros de {workspace.name}
         </h1>
       </div>
 
       {/* Banner info */}
-      <div className="flex items-start gap-3 bg-primo-accent/10 border border-primo-accent/30 rounded-lg p-4 mb-8">
-        <Info className="h-5 w-5 text-primo-accent shrink-0 mt-0.5" />
+      <div className="flex items-start gap-3 bg-primo-accentYellow/15 border border-primo-accentYellow/40 rounded-lg p-4 mb-8">
+        <Info className="h-5 w-5 text-primo-navy shrink-0 mt-0.5" />
         <p className="text-sm text-primo-text">
           Los miembros agregados podrán acceder a{" "}
           <span className="font-mono">/{workspace.slug}</span> cuando se
@@ -135,19 +135,19 @@ export default function MiembrosPage() {
             onChange={(e) => setEmail(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleAdd()}
             placeholder="email@cliente.com"
-            className="flex-1 bg-primo-bg border border-primo-border rounded-md px-4 py-2.5 text-sm text-primo-text placeholder:text-primo-muted focus:outline-none focus:border-primo-accent transition-colors"
+            className="flex-1 bg-primo-surface border border-primo-border rounded-md px-4 py-2.5 text-sm text-primo-text placeholder:text-primo-muted focus:outline-none focus:border-primo-accent transition-colors"
           />
           <select
             value={role}
             onChange={(e) => setRole(e.target.value as MemberRole)}
-            className="bg-primo-bg border border-primo-border rounded-md px-4 py-2.5 text-sm text-primo-text focus:outline-none focus:border-primo-accent transition-colors"
+            className="bg-primo-surface border border-primo-border rounded-md px-4 py-2.5 text-sm text-primo-text focus:outline-none focus:border-primo-accent transition-colors"
           >
             <option value="member">Member</option>
             <option value="owner">Owner</option>
           </select>
           <button
             onClick={handleAdd}
-            className="inline-flex items-center justify-center gap-2 bg-primo-accent text-primo-bg px-4 py-2.5 rounded-md font-medium hover:opacity-90 transition-opacity shrink-0"
+            className="inline-flex items-center justify-center gap-2 bg-primo-accent text-white px-5 py-2.5 rounded-full font-semibold hover:opacity-90 transition-opacity shrink-0"
           >
             <UserPlus className="h-4 w-4" />
             Agregar miembro
@@ -185,7 +185,7 @@ export default function MiembrosPage() {
                 {members.map((m) => (
                   <tr
                     key={m.email}
-                    className="border-b border-primo-border last:border-0 hover:bg-primo-bg/40 transition-colors"
+                    className="border-b border-primo-border last:border-0 hover:bg-primo-surfaceAlt/40 transition-colors"
                   >
                     <td className="px-4 py-3 text-primo-text">{m.email}</td>
                     <td className="px-4 py-3">
@@ -206,7 +206,7 @@ export default function MiembrosPage() {
                       <div className="flex justify-end">
                         <button
                           onClick={() => handleRemove(m.email)}
-                          className="inline-flex items-center gap-1.5 text-xs text-red-400 hover:text-red-300 px-2 py-1.5 rounded-md hover:bg-primo-bg transition-colors"
+                          className="inline-flex items-center gap-1.5 text-xs text-red-500 hover:text-red-600 px-2 py-1.5 rounded-md hover:bg-primo-surfaceAlt transition-colors"
                           title="Quitar miembro"
                         >
                           <Trash2 className="h-3.5 w-3.5" />
