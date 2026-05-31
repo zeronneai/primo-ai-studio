@@ -1,19 +1,40 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { useParams, notFound } from "next/navigation";
 import { ArrowRight, Plus, Image as ImageIcon, Layers } from "lucide-react";
 import { getWorkspace, getWorkspaceStyles } from "@/lib/data/workspaces";
 import { ReferencesStat } from "@/components/ReferencesStat";
+import type { Workspace, WorkspaceStyle } from "@/types";
 
-export default async function WorkspacePage({
-  params,
-}: {
-  params: Promise<{ workspace: string }>;
-}) {
-  const { workspace: slug } = await params;
-  const workspace = getWorkspace(slug);
+export default function WorkspacePage() {
+  const params = useParams<{ workspace: string }>();
+  const slug = params.workspace;
+
+  const [workspace, setWorkspace] = useState<Workspace | null>(null);
+  const [styles, setStyles] = useState<WorkspaceStyle[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const ws = getWorkspace(slug);
+    if (ws) {
+      setWorkspace(ws);
+      setStyles(getWorkspaceStyles(ws.id));
+    }
+    setLoading(false);
+  }, [slug]);
+
+  if (loading) {
+    return (
+      <div className="p-8 max-w-6xl mx-auto">
+        <div className="shimmer h-12 w-64 rounded-md mb-4" />
+        <div className="shimmer h-4 w-96 rounded-md" />
+      </div>
+    );
+  }
+
   if (!workspace) notFound();
-
-  const styles = getWorkspaceStyles(workspace.id);
 
   return (
     <div className="p-8 max-w-6xl mx-auto">

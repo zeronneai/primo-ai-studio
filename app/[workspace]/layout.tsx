@@ -1,26 +1,83 @@
-import { notFound } from "next/navigation";
+"use client";
+
+import { useEffect, useState } from "react";
+import { notFound, useParams, useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
 import { getWorkspace } from "@/lib/data/workspaces";
+import { getWorkspaceById } from "@/lib/data/workspaces-store";
+import { canAccessWorkspace, getUserWorkspaces } from "@/lib/auth/permissions";
+import { useSuperAdminContext } from "@/lib/auth/hooks";
 import { CoBrandedHeader } from "@/components/CoBrandedHeader";
 import { WorkspaceSidebar } from "@/components/WorkspaceSidebar";
 import { WorkspaceFooter } from "@/components/WorkspaceFooter";
+import { UnauthorizedAccess } from "@/components/UnauthorizedAccess";
 import { withColorFallbacks } from "@/lib/utils/palette";
+import type { Workspace } from "@/types";
 
-export default async function WorkspaceLayout({
+type Gate =
+  | { kind: "loading" }
+  | { kind: "not_found" }
+  | { kind: "unauthorized" }
+  | { kind: "ok"; workspace: Workspace };
+
+export default function WorkspaceLayout({
   children,
-  params,
 }: {
   children: React.ReactNode;
-  params: Promise<{ workspace: string }>;
 }) {
-  const { workspace: slug } = await params;
-  const workspace = getWorkspace(slug);
+  const params = useParams<{ workspace: string }>();
+  const slug = params.workspace;
+  const router = useRouter();
+  const { email, isSuperAdmin, isLoaded } = useSuperAdminContext();
 
-  if (!workspace) {
+  const [gate, setGate] = useState<Gate>({ kind: "loading" });
+
+  useEffect(() => {
+    if (!isLoaded) return;
+
+    const workspace = getWorkspace(slug);
+    if (!workspace) {
+      setGate({ kind: "not_found" });
+      return;
+    }
+
+    // Super admin o miembro → acceso.
+    if (canAccessWorkspace(email, workspace.id)) {
+      setGate({ kind: "ok", workspace });
+      return;
+    }
+
+    // Sin acceso a este: si tiene otro workspace, lo mandamos al primero.
+    const mine = getUserWorkspaces(email);
+    const firstSlug = mine
+      .map((id) => getWorkspaceById(id)?.slug)
+      .find((s): s is string => !!s);
+    if (firstSlug && firstSlug !== slug) {
+      router.replace(`/${firstSlug}`);
+      setGate({ kind: "loading" });
+      return;
+    }
+
+    setGate({ kind: "unauthorized" });
+  }, [slug, email, isSuperAdmin, isLoaded, router]);
+
+  if (gate.kind === "not_found") {
     notFound();
   }
 
-  // Rellena cualquier color faltante con defaults razonables (workspaces
-  // viejos del seed o custom incompletos no rompen la UI).
+  if (gate.kind === "loading") {
+    return (
+      <div className="min-h-screen bg-primo-bg flex items-center justify-center">
+        <Loader2 className="h-6 w-6 animate-spin text-primo-muted" />
+      </div>
+    );
+  }
+
+  if (gate.kind === "unauthorized") {
+    return <UnauthorizedAccess />;
+  }
+
+  const { workspace } = gate;
   const c = withColorFallbacks(workspace.brand_colors);
   const cssVars = {
     "--ws-primary": c.primary,

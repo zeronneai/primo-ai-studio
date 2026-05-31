@@ -8,6 +8,7 @@ import { useSuperAdminContext } from "@/lib/auth/hooks";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { ToastProvider } from "@/components/Toast";
+import { seedDefaultMembers } from "@/lib/data/members-store";
 
 export default function AdminLayout({
   children,
@@ -16,6 +17,11 @@ export default function AdminLayout({
 }) {
   const { isSuperAdmin, isLoaded } = useSuperAdminContext();
   const router = useRouter();
+
+  // Asegura el seed de miembros (Torque owner) en el cliente. Idempotente.
+  useEffect(() => {
+    seedDefaultMembers();
+  }, []);
 
   useEffect(() => {
     if (isLoaded && !isSuperAdmin) {

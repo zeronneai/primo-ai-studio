@@ -1,14 +1,13 @@
 import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
 import { AdminLinkButton } from "@/components/admin/AdminLinkButton";
+import { WorkspaceSwitcher } from "@/components/WorkspaceSwitcher";
 import type { Workspace } from "@/types";
 
 const PRIMO_LOGO_URL =
   "https://res.cloudinary.com/dsprn0ew4/image/upload/v1778810517/replicame_ese_logo_sin_a%C3%B1adir_202605142001_xo3xpe.jpg";
 
 export function CoBrandedHeader({ workspace }: { workspace: Workspace }) {
-  const accent = workspace.brand_colors.accent;
-
   return (
     <header className="bg-ws-surface border-b border-ws-border backdrop-blur-sm sticky top-0 z-50">
       <div className="container mx-auto flex h-16 items-center justify-between px-6">
@@ -34,34 +33,7 @@ export function CoBrandedHeader({ workspace }: { workspace: Workspace }) {
 
         {/* Derecha: Workspace (prominente) + acciones */}
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-3">
-            {workspace.logo_url ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={workspace.logo_url}
-                alt={workspace.name}
-                className="h-10 w-auto rounded-md object-contain"
-              />
-            ) : (
-              <div
-                className="h-10 w-10 rounded-md flex items-center justify-center font-display tracking-wider text-lg"
-                style={{ backgroundColor: accent + "20", color: accent }}
-              >
-                {workspace.name.charAt(0)}
-              </div>
-            )}
-            <div className="hidden sm:flex flex-col">
-              <span
-                className="font-display text-lg tracking-wide leading-none"
-                style={{ color: accent }}
-              >
-                {workspace.name}
-              </span>
-              <span className="text-[10px] text-ws-text-muted leading-tight mt-0.5">
-                {workspace.industry}
-              </span>
-            </div>
-          </div>
+          <WorkspaceSwitcher workspace={workspace} />
 
           <AdminLinkButton />
 

@@ -101,3 +101,20 @@ export function removeMember(workspaceId: string, email: string): void {
   );
   writeAll(map);
 }
+
+/** True si ese email ya es miembro del workspace. */
+export function isMemberOf(workspaceId: string, email: string): boolean {
+  const clean = normalizeEmail(email);
+  return getMembers(workspaceId).some(
+    (m) => normalizeEmail(m.email) === clean
+  );
+}
+
+/** Elimina todos los miembros de un workspace (al borrar el workspace). */
+export function removeAllMembers(workspaceId: string): void {
+  if (typeof window === "undefined") return;
+  const map = seedDefaultMembers();
+  if (!map[workspaceId]) return;
+  delete map[workspaceId];
+  writeAll(map);
+}

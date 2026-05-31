@@ -3,9 +3,13 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Eye, Pencil, Users, Trash2 } from "lucide-react";
-import { getAllWorkspaces } from "@/lib/data/workspaces-store";
-import { getStylesForWorkspace } from "@/lib/data/workspaces-store";
-import { getMembers } from "@/lib/data/members-store";
+import {
+  getAllWorkspaces,
+  getStylesForWorkspace,
+  deleteWorkspace,
+} from "@/lib/data/workspaces-store";
+import { getMembers, removeAllMembers } from "@/lib/data/members-store";
+import { useToast } from "@/components/Toast";
 import type { Workspace } from "@/types";
 
 type Row = {
@@ -16,8 +20,9 @@ type Row = {
 
 export function WorkspacesList() {
   const [rows, setRows] = useState<Row[] | null>(null);
+  const { showToast } = useToast();
 
-  useEffect(() => {
+  function load() {
     const all = getAllWorkspaces();
     setRows(
       all.map((workspace) => ({
@@ -26,7 +31,25 @@ export function WorkspacesList() {
         memberCount: getMembers(workspace.id).length,
       }))
     );
+  }
+
+  useEffect(() => {
+    load();
   }, []);
+
+  function handleDelete(workspace: Workspace) {
+    if (
+      !confirm(
+        `¿Eliminar permanentemente ${workspace.name}? Esta acción no se puede deshacer.`
+      )
+    ) {
+      return;
+    }
+    deleteWorkspace(workspace.id); // también borra sus estilos custom
+    removeAllMembers(workspace.id);
+    load();
+    showToast(`${workspace.name} eliminado`);
+  }
 
   // Cargando (SSR / primer render cliente)
   if (rows === null) {
@@ -67,6 +90,7 @@ export function WorkspacesList() {
                 workspace={workspace}
                 styleCount={styleCount}
                 memberCount={memberCount}
+                onDelete={() => handleDelete(workspace)}
               />
             ))}
           </tbody>
@@ -80,7 +104,8 @@ function WorkspaceRow({
   workspace,
   styleCount,
   memberCount,
-}: Row) {
+  onDelete,
+}: Row & { onDelete: () => void }) {
   const isCustom = workspace.is_custom === true;
   const accent = workspace.brand_colors.accent;
 
@@ -151,20 +176,28 @@ function WorkspaceRow({
             Editar
           </Link>
 
-          <button
-            disabled
-            title="Próximamente — Fase 5"
-            className="inline-flex items-center gap-1.5 text-xs text-primo-muted/40 px-2 py-1.5 rounded-md cursor-not-allowed"
+          <Link
+            href={`/admin/${workspace.id}/miembros`}
+            className="inline-flex items-center gap-1.5 text-xs text-primo-muted hover:text-primo-text px-2 py-1.5 rounded-md hover:bg-primo-bg transition-colors"
+            title="Gestionar miembros"
           >
             <Users className="h-3.5 w-3.5" />
             Miembros
-          </button>
+          </Link>
 
-          {isCustom && (
+          {isCustom ? (
+            <button
+              onClick={onDelete}
+              title="Eliminar workspace"
+              className="inline-flex items-center gap-1.5 text-xs text-red-400 hover:text-red-300 px-2 py-1.5 rounded-md hover:bg-primo-bg transition-colors"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
+          ) : (
             <button
               disabled
-              title="Próximamente — Fase 3"
-              className="inline-flex items-center gap-1.5 text-xs text-red-400/40 px-2 py-1.5 rounded-md cursor-not-allowed"
+              title="No se puede eliminar el workspace demo"
+              className="inline-flex items-center gap-1.5 text-xs text-red-400/30 px-2 py-1.5 rounded-md cursor-not-allowed"
             >
               <Trash2 className="h-3.5 w-3.5" />
             </button>
