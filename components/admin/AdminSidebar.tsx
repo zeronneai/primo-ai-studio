@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutGrid, Settings } from "lucide-react";
+import { LayoutGrid, ArrowLeft } from "lucide-react";
 
 // Sidebar del admin panel. Paleta Primo siempre.
 export function AdminSidebar() {
@@ -27,19 +27,13 @@ export function AdminSidebar() {
           Workspaces
         </Link>
 
-        <div
-          className="flex items-center justify-between gap-3 px-3 py-2.5 rounded-md text-sm border-l-2 border-transparent text-primo-muted opacity-50 cursor-not-allowed"
-          title="Próximamente"
-          aria-disabled="true"
+        <Link
+          href="/"
+          className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm border-l-2 border-transparent text-primo-muted hover:text-primo-navy hover:bg-primo-surfaceAlt transition-colors"
         >
-          <span className="flex items-center gap-3">
-            <Settings className="h-4 w-4" />
-            Configuración
-          </span>
-          <span className="text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-primo-border text-primo-muted">
-            Pronto
-          </span>
-        </div>
+          <ArrowLeft className="h-4 w-4" />
+          Volver al sitio
+        </Link>
       </nav>
     </aside>
   );

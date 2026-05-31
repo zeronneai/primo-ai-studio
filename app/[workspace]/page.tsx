@@ -5,8 +5,10 @@ import Link from "next/link";
 import { useParams, notFound } from "next/navigation";
 import { ArrowRight, Plus, Image as ImageIcon, Layers } from "lucide-react";
 import { getWorkspace, getWorkspaceStyles } from "@/lib/data/workspaces";
+import { getReferences } from "@/lib/data/references-store";
 import { ReferencesStat } from "@/components/ReferencesStat";
-import type { Workspace, WorkspaceStyle } from "@/types";
+import { WorkspaceOnboardingBanner } from "@/components/WorkspaceOnboardingBanner";
+import type { Workspace, WorkspaceStyle, ReferenceAsset } from "@/types";
 
 export default function WorkspacePage() {
   const params = useParams<{ workspace: string }>();
@@ -14,6 +16,7 @@ export default function WorkspacePage() {
 
   const [workspace, setWorkspace] = useState<Workspace | null>(null);
   const [styles, setStyles] = useState<WorkspaceStyle[]>([]);
+  const [references, setReferences] = useState<ReferenceAsset[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -21,6 +24,7 @@ export default function WorkspacePage() {
     if (ws) {
       setWorkspace(ws);
       setStyles(getWorkspaceStyles(ws.id));
+      setReferences(getReferences(ws.id));
     }
     setLoading(false);
   }, [slug]);
@@ -38,6 +42,12 @@ export default function WorkspacePage() {
 
   return (
     <div className="p-8 max-w-6xl mx-auto">
+      <WorkspaceOnboardingBanner
+        workspace={workspace}
+        styles={styles}
+        references={references}
+      />
+
       {/* Welcome */}
       <div className="mb-12">
         <div className="text-sm text-ws-text-muted mb-2">Workspace</div>

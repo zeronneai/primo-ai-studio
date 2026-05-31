@@ -3,6 +3,8 @@
 import { useUser } from "@clerk/nextjs";
 import {
   isSuperAdmin,
+  isWorkspaceOwner,
+  canConfigureWorkspace,
   emailOf,
   type MetadataUser,
 } from "@/lib/auth/permissions";
@@ -34,6 +36,21 @@ export function useCurrentUserEmail(): string | null {
 export function useIsSuperAdmin(): boolean {
   const { user } = useUser();
   return isSuperAdmin((user as MetadataUser | null) ?? null);
+}
+
+/** True si el usuario actual es owner del workspace dado. */
+export function useIsWorkspaceOwner(workspaceId: string): boolean {
+  const { user } = useUser();
+  return isWorkspaceOwner((user as MetadataUser | null) ?? null, workspaceId);
+}
+
+/** True si el usuario actual puede configurar el workspace (owner o super admin). */
+export function useCanConfigureWorkspace(workspaceId: string): boolean {
+  const { user } = useUser();
+  return canConfigureWorkspace(
+    (user as MetadataUser | null) ?? null,
+    workspaceId
+  );
 }
 
 /** Contexto completo de super admin para usar en componentes. */

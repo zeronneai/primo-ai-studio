@@ -7,8 +7,10 @@ import {
   Plus,
   History,
   Image as ImageIcon,
+  Settings,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useCanConfigureWorkspace } from "@/lib/auth/hooks";
 import type { Workspace } from "@/types";
 
 const NAV_ITEMS = [
@@ -18,14 +20,23 @@ const NAV_ITEMS = [
   { label: "Referencias", href: "/referencias", icon: ImageIcon },
 ];
 
+const CONFIG_ITEM = {
+  label: "Configuración",
+  href: "/configuracion",
+  icon: Settings,
+};
+
 export function WorkspaceSidebar({ workspace }: { workspace: Workspace }) {
   const pathname = usePathname();
   const base = `/${workspace.slug}`;
+  const canConfigure = useCanConfigureWorkspace(workspace.id);
+
+  const navItems = canConfigure ? [...NAV_ITEMS, CONFIG_ITEM] : NAV_ITEMS;
 
   return (
     <aside className="w-60 border-r border-ws-border min-h-[calc(100vh-64px)] hidden md:block">
       <nav className="p-4 space-y-1">
-        {NAV_ITEMS.map((item) => {
+        {navItems.map((item) => {
           const href = base + item.href;
           const isActive =
             item.href === ""

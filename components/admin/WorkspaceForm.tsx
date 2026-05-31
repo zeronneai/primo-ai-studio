@@ -51,15 +51,28 @@ function emptyStyle(workspaceId: string, sortOrder: number): WorkspaceStyle {
   };
 }
 
+export type WorkspaceFormField =
+  | "name"
+  | "slug"
+  | "industry"
+  | "monthly_credit_limit";
+
 export function WorkspaceForm({
   initialData,
   mode,
+  hideFields = [],
+  redirectTo,
 }: {
   initialData?: { workspace: Workspace; styles: WorkspaceStyle[] };
   mode: "create" | "edit";
+  /** Campos a ocultar (p. ej. para el owner: name/slug/credit limit). */
+  hideFields?: WorkspaceFormField[];
+  /** A dónde ir tras guardar. Si es null, se queda en la página. */
+  redirectTo?: string | null;
 }) {
   const router = useRouter();
   const { showToast } = useToast();
+  const isHidden = (f: WorkspaceFormField) => hideFields.includes(f);
 
   const workspaceId = useMemo(
     () => initialData?.workspace.id ?? `ws_${Date.now()}`,
@@ -112,15 +125,18 @@ export function WorkspaceForm({
   }
 
   function validate(): string | null {
-    if (!name.trim()) return "El nombre es obligatorio";
-    if (!slug.trim()) return "El slug es obligatorio";
-    if (!industry.trim()) return "La industry es obligatoria";
+    if (!isHidden("name") && !name.trim()) return "El nombre es obligatorio";
+    if (!isHidden("slug") && !slug.trim()) return "El slug es obligatorio";
+    if (!isHidden("industry") && !industry.trim())
+      return "La industry es obligatoria";
 
     // Slug único (excepto el propio workspace en edit)
-    const clash = getAllWorkspaces().find(
-      (w) => w.slug === slug && w.id !== workspaceId
-    );
-    if (clash) return `El slug "/${slug}" ya está en uso`;
+    if (!isHidden("slug")) {
+      const clash = getAllWorkspaces().find(
+        (w) => w.slug === slug && w.id !== workspaceId
+      );
+      if (clash) return `El slug "/${slug}" ya está en uso`;
+    }
 
     // Colores válidos
     for (const f of COLOR_FIELDS) {
@@ -179,14 +195,16 @@ export function WorkspaceForm({
       replaceStylesForWorkspace(workspaceId, cleanStyles);
 
       showToast(
-        mode === "create" ? "Workspace creado ✓" : "Cambios guardados ✓"
+        mode === "create" ? "Workspace creado ✓" : "Configuración guardada ✓"
       );
 
-      if (mode === "create") {
-        router.push(`/${slug}`);
-      } else {
-        router.push("/admin");
+      // redirectTo === null → quedarse en la página (modo configuración owner)
+      if (redirectTo === null) {
+        setSaving(false);
+        return;
       }
+      const dest = redirectTo ?? (mode === "create" ? `/${slug}` : "/admin");
+      router.push(dest);
     } catch (e) {
       console.error(e);
       showToast("Error al guardar. Intenta de nuevo.", "error");
@@ -199,42 +217,50 @@ export function WorkspaceForm({
       {/* ── FORM ── */}
       <div className="space-y-8 min-w-0">
         {/* a) IDENTIDAD */}
-        <Section title="Identidad">
-          <div className="space-y-4">
-            <Field label="Nombre">
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => handleNameChange(e.target.value)}
-                placeholder="Ej. El Rooster Bar"
-                className={inputCls}
-              />
-            </Field>
-            <div className="grid sm:grid-cols-2 gap-4">
-              <Field label="Slug" hint="La URL será /{slug}">
-                <input
-                  type="text"
-                  value={slug}
-                  onChange={(e) => {
-                    setSlugTouched(true);
-                    setSlug(slugify(e.target.value));
-                  }}
-                  placeholder="rooster"
-                  className={`${inputCls} font-mono`}
-                />
-              </Field>
-              <Field label="Industry">
-                <input
-                  type="text"
-                  value={industry}
-                  onChange={(e) => setIndustry(e.target.value)}
-                  placeholder="Ej. Restaurant-Bar"
-                  className={inputCls}
-                />
-              </Field>
+        {(!isHidden("name") || !isHidden("slug") || !isHidden("industry")) && (
+          <Section title="Identidad">
+            <div className="space-y-4">
+              {!isHidden("name") && (
+                <Field label="Nombre">
+                  <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => handleNameChange(e.target.value)}
+                    placeholder="Ej. El Rooster Bar"
+                    className={inputCls}
+                  />
+                </Field>
+              )}
+              <div className="grid sm:grid-cols-2 gap-4">
+                {!isHidden("slug") && (
+                  <Field label="Slug" hint="La URL será /{slug}">
+                    <input
+                      type="text"
+                      value={slug}
+                      onChange={(e) => {
+                        setSlugTouched(true);
+                        setSlug(slugify(e.target.value));
+                      }}
+                      placeholder="rooster"
+                      className={`${inputCls} font-mono`}
+                    />
+                  </Field>
+                )}
+                {!isHidden("industry") && (
+                  <Field label="Industry">
+                    <input
+                      type="text"
+                      value={industry}
+                      onChange={(e) => setIndustry(e.target.value)}
+                      placeholder="Ej. Restaurant-Bar"
+                      className={inputCls}
+                    />
+                  </Field>
+                )}
+              </div>
             </div>
-          </div>
-        </Section>
+          </Section>
+        )}
 
         {/* b) BRANDING VISUAL */}
         <Section title="Branding visual">
@@ -273,17 +299,19 @@ export function WorkspaceForm({
         </Section>
 
         {/* c) CONFIGURACIÓN */}
-        <Section title="Configuración">
-          <Field label="Límite de créditos mensual">
-            <input
-              type="number"
-              min={0}
-              value={creditLimit}
-              onChange={(e) => setCreditLimit(Number(e.target.value))}
-              className={`${inputCls} max-w-[200px]`}
-            />
-          </Field>
-        </Section>
+        {!isHidden("monthly_credit_limit") && (
+          <Section title="Configuración">
+            <Field label="Límite de créditos mensual">
+              <input
+                type="number"
+                min={0}
+                value={creditLimit}
+                onChange={(e) => setCreditLimit(Number(e.target.value))}
+                className={`${inputCls} max-w-[200px]`}
+              />
+            </Field>
+          </Section>
+        )}
 
         {/* d) SYSTEM PROMPT */}
         <Section title="System prompt">
@@ -309,11 +337,15 @@ export function WorkspaceForm({
         <div className="flex items-center justify-end gap-3 pt-2 border-t border-primo-border">
           <button
             type="button"
-            onClick={() => router.push("/admin")}
+            onClick={() =>
+              router.push(
+                redirectTo === null ? `/${slug}` : redirectTo ?? "/admin"
+              )
+            }
             className="inline-flex items-center gap-2 text-sm border border-primo-border text-primo-navy hover:bg-primo-surfaceAlt px-5 py-2.5 rounded-full transition-colors"
           >
             <X className="h-4 w-4" />
-            Cancelar
+            {redirectTo === null ? "Listo" : "Cancelar"}
           </button>
           <button
             type="button"

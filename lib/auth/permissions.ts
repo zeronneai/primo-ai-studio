@@ -95,6 +95,31 @@ export function isWorkspaceMember(
   );
 }
 
+/** True si el user tiene rol "owner" en el workspace. */
+export function isWorkspaceOwner(
+  input: UserOrEmail,
+  workspaceId: string
+): boolean {
+  const { email } = resolve(input);
+  const e = norm(email);
+  if (!e) return false;
+  return getAllMembers().some(
+    (m) =>
+      m.workspace_id === workspaceId &&
+      norm(m.email) === e &&
+      m.role === "owner"
+  );
+}
+
+/** Puede configurar el workspace: super admin O su owner. */
+export function canConfigureWorkspace(
+  input: UserOrEmail,
+  workspaceId: string
+): boolean {
+  if (isSuperAdmin(input)) return true;
+  return isWorkspaceOwner(input, workspaceId);
+}
+
 /**
  * IDs de workspaces accesibles. Super admin → todos. Resto → donde es
  * miembro. Acepta user completo o email.
