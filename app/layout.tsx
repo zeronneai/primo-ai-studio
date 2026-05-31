@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Nunito_Sans, Caveat } from "next/font/google";
+import { Nunito_Sans } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 
@@ -9,13 +9,6 @@ const nunito = Nunito_Sans({
   variable: "--font-nunito",
   display: "swap",
   adjustFontFallback: false,
-});
-
-const caveat = Caveat({
-  subsets: ["latin"],
-  weight: ["600", "700"],
-  variable: "--font-caveat",
-  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -40,7 +33,7 @@ export default function RootLayout({
         },
       }}
     >
-      <html lang="es" className={`${nunito.variable} ${caveat.variable}`}>
+      <html lang="es" className={nunito.variable}>
         <body className="font-sans">{children}</body>
       </html>
     </ClerkProvider>

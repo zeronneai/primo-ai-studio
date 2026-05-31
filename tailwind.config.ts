@@ -9,7 +9,6 @@ const config: Config = {
     extend: {
       fontFamily: {
         sans: ["var(--font-nunito)", "system-ui", "sans-serif"],
-        script: ["var(--font-caveat)", "cursive"],
         display: ["var(--font-nunito)", "sans-serif"],
         mono: ["var(--font-mono)", "monospace"],
       },

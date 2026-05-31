@@ -177,7 +177,7 @@ export default function LandingPage() {
           <span className="font-sans font-extrabold text-5xl md:text-7xl text-primo-navy">
             Generate content that looks like{" "}
           </span>
-          <span className="font-script text-5xl md:text-7xl text-primo-accent">
+          <span className="font-sans font-medium italic text-5xl md:text-7xl text-primo-accent">
             every client made it themselves.
           </span>
         </h1>

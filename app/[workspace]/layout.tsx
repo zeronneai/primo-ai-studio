@@ -28,7 +28,7 @@ export default function WorkspaceLayout({
   const params = useParams<{ workspace: string }>();
   const slug = params.workspace;
   const router = useRouter();
-  const { email, isSuperAdmin, isLoaded } = useSuperAdminContext();
+  const { email, user, isSuperAdmin, isLoaded } = useSuperAdminContext();
 
   const [gate, setGate] = useState<Gate>({ kind: "loading" });
 
@@ -41,14 +41,29 @@ export default function WorkspaceLayout({
       return;
     }
 
-    // Super admin o miembro → acceso.
-    if (canAccessWorkspace(email, workspace.id)) {
+    // Super admin (vía metadata o email) → acceso directo. Usamos el booleano
+    // ya calculado por el context (lee publicMetadata), y como respaldo
+    // canAccessWorkspace con el USER completo (no solo el email).
+    const hasAccess =
+      isSuperAdmin || canAccessWorkspace(user ?? email, workspace.id);
+
+    // eslint-disable-next-line no-console
+    console.log("[Workspace gate]", {
+      isSuperAdmin,
+      email,
+      hasMetadataRole: (user?.publicMetadata as { role?: string } | undefined)
+        ?.role,
+      workspaceId: workspace.id,
+      hasAccess,
+    });
+
+    if (hasAccess) {
       setGate({ kind: "ok", workspace });
       return;
     }
 
     // Sin acceso a este: si tiene otro workspace, lo mandamos al primero.
-    const mine = getUserWorkspaces(email);
+    const mine = getUserWorkspaces(user ?? email);
     const firstSlug = mine
       .map((id) => getWorkspaceById(id)?.slug)
       .find((s): s is string => !!s);
@@ -59,7 +74,7 @@ export default function WorkspaceLayout({
     }
 
     setGate({ kind: "unauthorized" });
-  }, [slug, email, isSuperAdmin, isLoaded, router]);
+  }, [slug, email, user, isSuperAdmin, isLoaded, router]);
 
   if (gate.kind === "not_found") {
     notFound();
