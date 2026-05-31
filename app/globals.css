@@ -8,6 +8,18 @@
   --font-inter: "Inter", system-ui, sans-serif;
   --font-bebas: "Bebas Neue", Impact, sans-serif;
   --font-mono: "JetBrains Mono", monospace;
+
+  /* Fallbacks de los colores de workspace (paleta Primo). El layout de
+     /[workspace] sobreescribe estas variables con los colores de la marca.
+     Así, fuera de un workspace, las clases bg-ws-* siguen viéndose bien. */
+  --ws-primary: #0f1e2d;
+  --ws-accent: #f4c842;
+  --ws-accent-secondary: #e55b3c;
+  --ws-bg: #0f1e2d;
+  --ws-surface: #1a2e3f;
+  --ws-border: #2a3e4f;
+  --ws-text: #fafafa;
+  --ws-text-muted: #7a8b9a;
 }
 
 html,

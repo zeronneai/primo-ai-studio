@@ -6,6 +6,7 @@ import { Upload, Loader2, Sparkles, Image as ImageIcon, Copy, Check, Wand2 } fro
 import { saveGeneration } from "@/lib/data/generations-store";
 import { getReferences } from "@/lib/data/references-store";
 import { downscaleImage, generateId } from "@/lib/utils";
+import { readableTextOn } from "@/lib/utils/palette";
 import type {
   Workspace,
   WorkspaceStyle,
@@ -155,11 +156,13 @@ export function CreateForm({
   }
 
   const canGenerate = title.trim().length > 0 && selectedStyles.length > 0 && !generating;
+  const accent = workspace.brand_colors.accent;
+  const onAccent = readableTextOn(accent);
 
   return (
     <div className="space-y-8">
       {/* INPUT FORM */}
-      <div className="bg-primo-surface border border-primo-border rounded-xl p-6 space-y-6">
+      <div className="bg-ws-surface border border-ws-border rounded-xl p-6 space-y-6">
         {/* Image upload */}
         <div>
           <label className="block text-sm font-medium mb-2">
@@ -167,7 +170,7 @@ export function CreateForm({
           </label>
           <div
             onClick={() => fileInputRef.current?.click()}
-            className="border-2 border-dashed border-primo-border hover:border-primo-muted rounded-lg p-6 cursor-pointer transition-colors"
+            className="border-2 border-dashed border-ws-border hover:border-ws-accent rounded-lg p-6 cursor-pointer transition-colors"
           >
             {imagePreview ? (
               // eslint-disable-next-line @next/next/no-img-element
@@ -177,7 +180,7 @@ export function CreateForm({
                 className="max-h-64 mx-auto rounded-md"
               />
             ) : (
-              <div className="text-center text-primo-muted">
+              <div className="text-center text-ws-text-muted">
                 <Upload className="h-8 w-8 mx-auto mb-2" />
                 <p className="text-sm">Click para subir foto del atleta/escena</p>
                 <p className="text-xs mt-1">Sin imagen también funciona</p>
@@ -196,14 +199,14 @@ export function CreateForm({
         {/* Title */}
         <div>
           <label className="block text-sm font-medium mb-2">
-            Título del thumbnail <span className="text-primo-accent">*</span>
+            Título del thumbnail <span className="text-ws-accent">*</span>
           </label>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Ej. TRAINING WITH BASEBALL PROS"
-            className="w-full bg-primo-bg border border-primo-border rounded-md px-4 py-2.5 text-primo-text placeholder:text-primo-muted focus:outline-none focus:border-primo-accent transition-colors"
+            className="w-full bg-ws-bg border border-ws-border rounded-md px-4 py-2.5 text-ws-text placeholder:text-ws-text-muted focus:outline-none focus:border-ws-accent transition-colors"
           />
         </div>
 
@@ -217,7 +220,7 @@ export function CreateForm({
             onChange={(e) => setContext(e.target.value)}
             placeholder="Ej. Episodio sobre entrenamiento con jugadores profesionales..."
             rows={2}
-            className="w-full bg-primo-bg border border-primo-border rounded-md px-4 py-2.5 text-primo-text placeholder:text-primo-muted focus:outline-none focus:border-primo-accent transition-colors resize-none"
+            className="w-full bg-ws-bg border border-ws-border rounded-md px-4 py-2.5 text-ws-text placeholder:text-ws-text-muted focus:outline-none focus:border-ws-accent transition-colors resize-none"
           />
         </div>
 
@@ -241,7 +244,7 @@ export function CreateForm({
                       : "transparent",
                     borderColor: isSelected
                       ? workspace.brand_colors.accent
-                      : "#1f1f23",
+                      : "var(--ws-border)",
                   }}
                 >
                   <div className="flex items-center justify-between mb-1">
@@ -253,7 +256,7 @@ export function CreateForm({
                       />
                     )}
                   </div>
-                  <p className="text-xs text-primo-muted leading-relaxed line-clamp-2">
+                  <p className="text-xs text-ws-text-muted leading-relaxed line-clamp-2">
                     {style.description}
                   </p>
                 </button>
@@ -266,8 +269,8 @@ export function CreateForm({
         <button
           onClick={handleGenerate}
           disabled={!canGenerate}
-          className="w-full inline-flex items-center justify-center gap-2 text-white px-6 py-3 rounded-md font-medium transition-opacity disabled:opacity-40 disabled:cursor-not-allowed hover:opacity-90"
-          style={{ backgroundColor: workspace.brand_colors.accent }}
+          className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-md font-medium transition-opacity disabled:opacity-40 disabled:cursor-not-allowed hover:opacity-90"
+          style={{ backgroundColor: accent, color: onAccent }}
         >
           {generating ? (
             <>
@@ -287,11 +290,11 @@ export function CreateForm({
       {result && (
         <div className="space-y-4 fade-in">
           {/* Scene description */}
-          <div className="bg-primo-surface border border-primo-border rounded-xl p-6">
-            <h3 className="text-sm font-medium text-primo-muted uppercase tracking-wider mb-2">
+          <div className="bg-ws-surface border border-ws-border rounded-xl p-6">
+            <h3 className="text-sm font-medium text-ws-text-muted uppercase tracking-wider mb-2">
               Escena detectada
             </h3>
-            <p className="text-primo-text italic">
+            <p className="text-ws-text italic">
               &ldquo;{result.scene_description_es}&rdquo;
             </p>
             {!!result.references_used && result.references_used > 0 && (
@@ -324,7 +327,7 @@ export function CreateForm({
             return (
               <div
                 key={styleSlug}
-                className="bg-primo-surface border border-primo-border rounded-xl p-6 fade-in"
+                className="bg-ws-surface border border-ws-border rounded-xl p-6 fade-in"
               >
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
@@ -334,7 +337,7 @@ export function CreateForm({
                     />
                     <h3 className="font-semibold">{style.name}</h3>
                   </div>
-                  <span className="text-xs font-mono text-primo-muted">
+                  <span className="text-xs font-mono text-ws-text-muted">
                     {style.slug}
                   </span>
                 </div>
@@ -343,12 +346,12 @@ export function CreateForm({
                   {/* Prompt */}
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-primo-muted uppercase tracking-wider">
+                      <span className="text-xs text-ws-text-muted uppercase tracking-wider">
                         Prompt
                       </span>
                       <button
                         onClick={() => handleCopy(prompt, styleSlug)}
-                        className="inline-flex items-center gap-1.5 text-xs text-primo-muted hover:text-primo-text transition-colors"
+                        className="inline-flex items-center gap-1.5 text-xs text-ws-text-muted hover:text-ws-text transition-colors"
                       >
                         {isCopied ? (
                           <>
@@ -363,17 +366,17 @@ export function CreateForm({
                         )}
                       </button>
                     </div>
-                    <div className="bg-primo-bg border border-primo-border rounded-md p-4 font-mono text-xs text-primo-text leading-relaxed max-h-64 overflow-y-auto">
+                    <div className="bg-ws-bg border border-ws-border rounded-md p-4 font-mono text-xs text-ws-text leading-relaxed max-h-64 overflow-y-auto">
                       {prompt}
                     </div>
                   </div>
 
                   {/* Image generation */}
                   <div className="space-y-2">
-                    <span className="text-xs text-primo-muted uppercase tracking-wider">
+                    <span className="text-xs text-ws-text-muted uppercase tracking-wider">
                       Imagen generada
                     </span>
-                    <div className="aspect-[4/5] bg-primo-bg border border-primo-border rounded-md overflow-hidden relative">
+                    <div className="aspect-[4/5] bg-ws-bg border border-ws-border rounded-md overflow-hidden relative">
                       {generatedImage ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
@@ -382,7 +385,7 @@ export function CreateForm({
                           className="w-full h-full object-cover fade-in"
                         />
                       ) : isGeneratingImage ? (
-                        <div className="absolute inset-0 flex flex-col items-center justify-center text-primo-muted">
+                        <div className="absolute inset-0 flex flex-col items-center justify-center text-ws-text-muted">
                           <Loader2 className="h-6 w-6 animate-spin mb-2" />
                           <p className="text-xs">Generando con Nano Banana...</p>
                           <p className="text-[10px] mt-1">~3-5 segundos</p>
@@ -390,11 +393,11 @@ export function CreateForm({
                       ) : (
                         <button
                           onClick={() => handleGenerateImage(styleSlug, prompt)}
-                          className="absolute inset-0 flex flex-col items-center justify-center text-primo-muted hover:text-primo-text transition-colors group"
+                          className="absolute inset-0 flex flex-col items-center justify-center text-ws-text-muted hover:text-ws-text transition-colors group"
                         >
                           <Wand2 className="h-6 w-6 mb-2 group-hover:scale-110 transition-transform" />
                           <p className="text-xs">Generar imagen</p>
-                          <p className="text-[10px] mt-1 text-primo-muted">
+                          <p className="text-[10px] mt-1 text-ws-text-muted">
                             5 créditos
                           </p>
                         </button>
@@ -413,14 +416,14 @@ export function CreateForm({
                 setResult(null);
                 setGeneratedImages({});
               }}
-              className="text-sm text-primo-muted hover:text-primo-text transition-colors px-4 py-2"
+              className="text-sm text-ws-text-muted hover:text-ws-text transition-colors px-4 py-2"
             >
               Descartar
             </button>
             <button
               onClick={handleSaveAndGoToHistory}
-              className="inline-flex items-center gap-2 text-white px-4 py-2 rounded-md font-medium transition-opacity hover:opacity-90"
-              style={{ backgroundColor: workspace.brand_colors.accent }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-md font-medium transition-opacity hover:opacity-90"
+              style={{ backgroundColor: accent, color: onAccent }}
             >
               <ImageIcon className="h-4 w-4" />
               Guardar en historial

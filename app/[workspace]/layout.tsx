@@ -2,6 +2,8 @@ import { notFound } from "next/navigation";
 import { getWorkspace } from "@/lib/data/workspaces";
 import { CoBrandedHeader } from "@/components/CoBrandedHeader";
 import { WorkspaceSidebar } from "@/components/WorkspaceSidebar";
+import { WorkspaceFooter } from "@/components/WorkspaceFooter";
+import { withColorFallbacks } from "@/lib/utils/palette";
 
 export default async function WorkspaceLayout({
   children,
@@ -17,19 +19,31 @@ export default async function WorkspaceLayout({
     notFound();
   }
 
+  // Rellena cualquier color faltante con defaults razonables (workspaces
+  // viejos del seed o custom incompletos no rompen la UI).
+  const c = withColorFallbacks(workspace.brand_colors);
   const cssVars = {
-    "--ws-primary": workspace.brand_colors.primary,
-    "--ws-accent": workspace.brand_colors.accent,
-    "--ws-bg": workspace.brand_colors.bg,
+    "--ws-primary": c.primary,
+    "--ws-accent": c.accent,
+    "--ws-accent-secondary": c.accentSecondary,
+    "--ws-bg": c.bg,
+    "--ws-surface": c.surface,
+    "--ws-border": c.border,
+    "--ws-text": c.text,
+    "--ws-text-muted": c.textMuted,
   } as React.CSSProperties;
 
   return (
-    <div style={cssVars} className="min-h-screen bg-primo-bg">
+    <div
+      style={cssVars}
+      className="min-h-screen flex flex-col bg-ws-bg text-ws-text"
+    >
       <CoBrandedHeader workspace={workspace} />
-      <div className="flex">
+      <div className="flex flex-1">
         <WorkspaceSidebar workspace={workspace} />
         <main className="flex-1 min-h-[calc(100vh-64px)]">{children}</main>
       </div>
+      <WorkspaceFooter />
     </div>
   );
 }

@@ -16,7 +16,7 @@ export default async function CrearPage({
   return (
     <div className="p-8 max-w-5xl mx-auto">
       <div className="mb-8">
-        <div className="text-sm text-primo-muted mb-2">
+        <div className="text-sm text-ws-text-muted mb-2">
           {workspace.name} · Crear
         </div>
         <h1 className="font-display text-4xl tracking-tight">

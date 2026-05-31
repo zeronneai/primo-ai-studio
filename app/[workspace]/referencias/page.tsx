@@ -17,6 +17,7 @@ import {
   deleteReference,
 } from "@/lib/data/references-store";
 import { UploadReferenceDialog } from "@/components/UploadReferenceDialog";
+import { readableTextOn } from "@/lib/utils/palette";
 import type { Workspace, WorkspaceStyle, ReferenceAsset } from "@/types";
 
 export default function ReferenciasPage() {
@@ -75,6 +76,7 @@ export default function ReferenciasPage() {
   }
 
   const accent = workspace.brand_colors.accent;
+  const onAccent = readableTextOn(accent);
   const styleName = (s: string | null) =>
     styles.find((st) => st.slug === s)?.name ?? s;
 
@@ -83,20 +85,20 @@ export default function ReferenciasPage() {
       {/* Header */}
       <div className="flex items-start justify-between mb-8 gap-4">
         <div>
-          <div className="text-sm text-primo-muted mb-2">
+          <div className="text-sm text-ws-text-muted mb-2">
             {workspace.name} · Referencias
           </div>
           <h1 className="font-display text-4xl tracking-tight">
             REFERENCIAS VISUALES
           </h1>
-          <p className="text-primo-muted text-sm mt-2">
+          <p className="text-ws-text-muted text-sm mt-2">
             ADN visual del workspace · {references.length} referencias cargadas
           </p>
         </div>
         <button
           onClick={() => setDialogOpen(true)}
-          className="inline-flex items-center gap-2 text-primo-bg px-4 py-2.5 rounded-md font-medium transition-opacity hover:opacity-90 shrink-0"
-          style={{ backgroundColor: accent }}
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-md font-medium transition-opacity hover:opacity-90 shrink-0"
+          style={{ backgroundColor: accent, color: onAccent }}
         >
           <Upload className="h-4 w-4" />
           Subir referencia
@@ -104,9 +106,9 @@ export default function ReferenciasPage() {
       </div>
 
       {/* Explainer */}
-      <div className="bg-primo-surface border border-primo-border rounded-lg p-6 mb-8">
+      <div className="bg-ws-surface border border-ws-border rounded-lg p-6 mb-8">
         <h2 className="font-semibold mb-2">¿Cómo funciona?</h2>
-        <p className="text-sm text-primo-muted leading-relaxed">
+        <p className="text-sm text-ws-text-muted leading-relaxed">
           Las referencias visuales son thumbnails/flyers ya producidos que el
           sistema analiza para aprender el estilo de la marca. Cuando subes una
           referencia, Claude Vision extrae su ADN visual (colores, composición,
@@ -122,9 +124,9 @@ export default function ReferenciasPage() {
           return (
             <div
               key={ref.id}
-              className="bg-primo-surface border border-primo-border rounded-lg overflow-hidden fade-in flex flex-col"
+              className="bg-ws-surface border border-ws-border rounded-lg overflow-hidden fade-in flex flex-col"
             >
-              <div className="aspect-[4/5] bg-primo-bg relative">
+              <div className="aspect-[4/5] bg-ws-bg relative">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={ref.image_url}
@@ -133,8 +135,8 @@ export default function ReferenciasPage() {
                 />
                 {ref.is_user_uploaded && (
                   <span
-                    className="absolute top-2 left-2 text-[10px] font-medium px-2 py-0.5 rounded-full text-primo-bg"
-                    style={{ backgroundColor: accent }}
+                    className="absolute top-2 left-2 text-[10px] font-medium px-2 py-0.5 rounded-full"
+                    style={{ backgroundColor: accent, color: onAccent }}
                   >
                     Subida por ti
                   </span>
@@ -142,7 +144,7 @@ export default function ReferenciasPage() {
                 {ref.is_user_uploaded && (
                   <button
                     onClick={() => handleDelete(ref.id)}
-                    className="absolute top-2 right-2 h-7 w-7 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center text-white/80 hover:text-primo-accentSecondary hover:bg-black/80 transition-colors"
+                    className="absolute top-2 right-2 h-7 w-7 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center text-white/80 hover:text-red-400 hover:bg-black/80 transition-colors"
                     aria-label="Eliminar referencia"
                   >
                     <Trash2 className="h-3.5 w-3.5" />
@@ -159,7 +161,7 @@ export default function ReferenciasPage() {
                     {styleName(ref.style_slug)}
                   </div>
                 )}
-                <p className="text-sm text-primo-text flex-1">{ref.notes}</p>
+                <p className="text-sm text-ws-text flex-1">{ref.notes}</p>
 
                 {ref.analysis && (
                   <>
@@ -167,7 +169,7 @@ export default function ReferenciasPage() {
                       onClick={() =>
                         setExpanded(isExpanded ? null : ref.id)
                       }
-                      className="mt-3 inline-flex items-center gap-1.5 text-xs text-primo-muted hover:text-primo-text transition-colors"
+                      className="mt-3 inline-flex items-center gap-1.5 text-xs text-ws-text-muted hover:text-ws-text transition-colors"
                     >
                       <Sparkles className="h-3 w-3" />
                       {isExpanded ? "Ocultar análisis IA" : "Ver análisis IA"}
@@ -179,9 +181,9 @@ export default function ReferenciasPage() {
                     </button>
 
                     {isExpanded && (
-                      <div className="mt-3 space-y-2.5 text-xs fade-in border-t border-primo-border pt-3">
+                      <div className="mt-3 space-y-2.5 text-xs fade-in border-t border-ws-border pt-3">
                         <div className="flex items-center justify-between">
-                          <span className="text-primo-muted uppercase tracking-wider">
+                          <span className="text-ws-text-muted uppercase tracking-wider">
                             Quality score
                           </span>
                           <span className="inline-flex items-center gap-1 font-semibold">
@@ -195,7 +197,7 @@ export default function ReferenciasPage() {
                         </div>
 
                         <div>
-                          <span className="text-primo-muted uppercase tracking-wider block mb-1">
+                          <span className="text-ws-text-muted uppercase tracking-wider block mb-1">
                             Colores
                           </span>
                           <div className="flex gap-1.5">
@@ -203,7 +205,7 @@ export default function ReferenciasPage() {
                               <span
                                 key={c}
                                 title={c}
-                                className="h-5 w-5 rounded border border-primo-border"
+                                className="h-5 w-5 rounded border border-ws-border"
                                 style={{ backgroundColor: c }}
                               />
                             ))}
@@ -225,14 +227,14 @@ export default function ReferenciasPage() {
                         />
 
                         <div>
-                          <span className="text-primo-muted uppercase tracking-wider block mb-1">
+                          <span className="text-ws-text-muted uppercase tracking-wider block mb-1">
                             Elementos recurrentes
                           </span>
                           <div className="flex flex-wrap gap-1.5">
                             {ref.analysis.recurring_elements.map((el) => (
                               <span
                                 key={el}
-                                className="px-2 py-0.5 rounded-full bg-primo-bg border border-primo-border text-primo-muted"
+                                className="px-2 py-0.5 rounded-full bg-ws-bg border border-ws-border text-ws-text-muted"
                               >
                                 {el}
                               </span>
@@ -261,7 +263,7 @@ export default function ReferenciasPage() {
 
       {/* Toast */}
       {toast && (
-        <div className="fixed bottom-6 right-6 z-[110] flex items-center gap-2 bg-primo-surface border border-primo-border rounded-lg px-4 py-3 shadow-2xl fade-in">
+        <div className="fixed bottom-6 right-6 z-[110] flex items-center gap-2 bg-ws-surface border border-ws-border rounded-lg px-4 py-3 shadow-2xl fade-in">
           <Check className="h-4 w-4" style={{ color: accent }} />
           <span className="text-sm">{toast}</span>
         </div>
@@ -273,10 +275,10 @@ export default function ReferenciasPage() {
 function AnalysisRow({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <span className="text-primo-muted uppercase tracking-wider block mb-0.5">
+      <span className="text-ws-text-muted uppercase tracking-wider block mb-0.5">
         {label}
       </span>
-      <p className="text-primo-text leading-relaxed">{value}</p>
+      <p className="text-ws-text leading-relaxed">{value}</p>
     </div>
   );
 }

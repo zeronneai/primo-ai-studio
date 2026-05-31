@@ -22,6 +22,19 @@ const config: Config = {
           accent: "#F4C842",
           accentSecondary: "#E55B3C",
         },
+        // Colores del workspace activo. Mapean a CSS variables que setea
+        // app/[workspace]/layout.tsx. Fuera de un workspace, los fallbacks
+        // de :root (paleta Primo) mantienen todo coherente.
+        ws: {
+          primary: "var(--ws-primary)",
+          accent: "var(--ws-accent)",
+          "accent-secondary": "var(--ws-accent-secondary)",
+          bg: "var(--ws-bg)",
+          surface: "var(--ws-surface)",
+          border: "var(--ws-border)",
+          text: "var(--ws-text)",
+          "text-muted": "var(--ws-text-muted)",
+        },
       },
     },
   },

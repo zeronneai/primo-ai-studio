@@ -15,8 +15,8 @@ export function ReferencesStat({ workspaceId }: { workspaceId: string }) {
   }, [workspaceId]);
 
   return (
-    <div className="bg-primo-surface border border-primo-border rounded-lg p-5">
-      <div className="flex items-center gap-2 text-primo-muted text-xs mb-2">
+    <div className="bg-ws-surface border border-ws-border rounded-lg p-5">
+      <div className="flex items-center gap-2 text-ws-text-muted text-xs mb-2">
         <Images className="h-4 w-4" />
         <span className="uppercase tracking-wider">Referencias cargadas</span>
       </div>

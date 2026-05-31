@@ -23,7 +23,7 @@ export function WorkspaceSidebar({ workspace }: { workspace: Workspace }) {
   const base = `/${workspace.slug}`;
 
   return (
-    <aside className="w-60 border-r border-primo-border min-h-[calc(100vh-64px)] hidden md:block">
+    <aside className="w-60 border-r border-ws-border min-h-[calc(100vh-64px)] hidden md:block">
       <nav className="p-4 space-y-1">
         {NAV_ITEMS.map((item) => {
           const href = base + item.href;
@@ -38,18 +38,11 @@ export function WorkspaceSidebar({ workspace }: { workspace: Workspace }) {
               key={item.href}
               href={href}
               className={cn(
-                "flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
+                "flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors border-l-2",
                 isActive
-                  ? "bg-primo-surface text-primo-text"
-                  : "text-primo-muted hover:bg-primo-surface/50 hover:text-primo-text"
+                  ? "bg-ws-surface text-ws-text border-ws-accent"
+                  : "text-ws-text-muted border-transparent hover:bg-ws-surface hover:text-ws-text"
               )}
-              style={
-                isActive
-                  ? {
-                      borderLeft: `2px solid ${workspace.brand_colors.accent}`,
-                    }
-                  : undefined
-              }
             >
               <Icon className="h-4 w-4" />
               {item.label}
@@ -60,14 +53,14 @@ export function WorkspaceSidebar({ workspace }: { workspace: Workspace }) {
 
       {/* Credits indicator */}
       <div className="absolute bottom-6 left-4 right-4 max-w-[208px]">
-        <div className="bg-primo-surface border border-primo-border rounded-md p-3">
+        <div className="bg-ws-surface border border-ws-border rounded-md p-3">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs text-primo-muted">Créditos del mes</span>
+            <span className="text-xs text-ws-text-muted">Créditos del mes</span>
             <span className="text-xs font-mono">
               {workspace.monthly_credit_limit}
             </span>
           </div>
-          <div className="h-1 bg-primo-bg rounded-full overflow-hidden">
+          <div className="h-1 bg-ws-bg rounded-full overflow-hidden">
             <div
               className="h-full rounded-full"
               style={{
