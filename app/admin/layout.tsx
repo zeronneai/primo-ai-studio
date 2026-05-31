@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useSuperAdminContext } from "@/lib/auth/hooks";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
+import { ToastProvider } from "@/components/Toast";
 
 export default function AdminLayout({
   children,
@@ -55,12 +56,14 @@ export default function AdminLayout({
   }
 
   return (
-    <div className="min-h-screen bg-primo-bg text-primo-text">
-      <AdminHeader />
-      <div className="flex">
-        <AdminSidebar />
-        <main className="flex-1 min-h-[calc(100vh-4rem)]">{children}</main>
+    <ToastProvider>
+      <div className="min-h-screen bg-primo-bg text-primo-text">
+        <AdminHeader />
+        <div className="flex">
+          <AdminSidebar />
+          <main className="flex-1 min-h-[calc(100vh-4rem)]">{children}</main>
+        </div>
       </div>
-    </div>
+    </ToastProvider>
   );
 }

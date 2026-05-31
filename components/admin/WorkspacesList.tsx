@@ -142,14 +142,14 @@ function WorkspaceRow({
             Ver
           </Link>
 
-          <button
-            disabled
-            title="Próximamente — Fase 3"
-            className="inline-flex items-center gap-1.5 text-xs text-primo-muted/40 px-2 py-1.5 rounded-md cursor-not-allowed"
+          <Link
+            href={`/admin/${workspace.id}`}
+            className="inline-flex items-center gap-1.5 text-xs text-primo-muted hover:text-primo-text px-2 py-1.5 rounded-md hover:bg-primo-bg transition-colors"
+            title="Editar workspace"
           >
             <Pencil className="h-3.5 w-3.5" />
             Editar
-          </button>
+          </Link>
 
           <button
             disabled

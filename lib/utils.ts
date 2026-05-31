@@ -28,6 +28,22 @@ export function generateId(prefix: string = "id"): string {
 }
 
 /**
+ * Convierte un texto a slug: minúsculas, sin acentos, espacios → guiones,
+ * solo [a-z0-9-]. Útil para slugs de workspace y de estilos.
+ */
+export function slugify(text: string): string {
+  return text
+    .toString()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "") // quitar acentos
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-") // no alfanumérico → guion
+    .replace(/^-+|-+$/g, "") // sin guiones al inicio/fin
+    .replace(/-{2,}/g, "-"); // colapsar guiones repetidos
+}
+
+/**
  * Redimensiona una imagen (dataURL) en el navegador vía canvas para
  * reducir drásticamente el peso antes de guardarla en localStorage.
  * - Lado más largo limitado a `maxSize` px (mantiene aspect ratio)
