@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
+import { AdminLinkButton } from "@/components/admin/AdminLinkButton";
 import type { Workspace } from "@/types";
 
 const PRIMO_LOGO_URL =
@@ -53,6 +54,8 @@ export function CoBrandedHeader({ workspace }: { workspace: Workspace }) {
               </span>
             </div>
           </div>
+
+          <AdminLinkButton />
 
           <div className="h-6 w-px bg-primo-border" />
 
