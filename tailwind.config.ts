@@ -8,19 +8,23 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
-        display: ["var(--font-bebas)", "Impact", "sans-serif"],
+        sans: ["var(--font-nunito)", "system-ui", "sans-serif"],
+        script: ["var(--font-caveat)", "cursive"],
+        display: ["var(--font-nunito)", "sans-serif"],
         mono: ["var(--font-mono)", "monospace"],
       },
       colors: {
         primo: {
-          bg: "#0F1E2D",
-          surface: "#1A2E3F",
-          border: "#2A3E4F",
-          text: "#FAFAFA",
-          muted: "#7A8B9A",
-          accent: "#F4C842",
-          accentSecondary: "#E55B3C",
+          bg: "#F5E6C8",
+          surface: "#FFFFFF",
+          surfaceAlt: "#FAF0DD",
+          border: "#E8D5A8",
+          text: "#1A2E3F",
+          muted: "#5A6878",
+          accent: "#E55B3C",
+          accentYellow: "#F4C842",
+          accentGreen: "#8DAA7B",
+          navy: "#1A2E3F",
         },
         // Colores del workspace activo. Mapean a CSS variables que setea
         // app/[workspace]/layout.tsx. Fuera de un workspace, los fallbacks

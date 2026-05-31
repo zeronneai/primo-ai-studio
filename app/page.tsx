@@ -5,11 +5,12 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   ArrowRight,
-  Sparkles,
-  Zap,
-  Shield,
+  ChevronRight,
   Loader2,
   LayoutGrid,
+  Palette,
+  Sparkles,
+  Zap,
 } from "lucide-react";
 import { useSuperAdminContext } from "@/lib/auth/hooks";
 import { getUserWorkspaces } from "@/lib/auth/permissions";
@@ -43,60 +44,55 @@ export default function LandingPage() {
 
   // ── Usuario logueado: vistas según rol ──────────────────────
   if (isSignedIn) {
-    // Esperando carga de membresías
-    if (myWorkspaces === null) {
-      return <CenterSpinner />;
-    }
+    if (myWorkspaces === null) return <CenterSpinner />;
 
-    // Super admin
     if (isSuperAdmin) {
       return (
         <ShellCentered>
-          <h1 className="font-display text-5xl tracking-tight mb-4">
-            BIENVENIDO, ADMIN
+          <h1 className="font-sans font-extrabold text-5xl tracking-tight text-primo-navy mb-4">
+            Welcome, admin.
           </h1>
-          <p className="text-primo-muted mb-8">
-            Gestiona los workspaces de Primo o explora la demo.
+          <p className="text-primo-muted text-lg mb-8">
+            Manage your Primo workspaces or explore the demo.
           </p>
           <div className="flex items-center justify-center gap-4">
             <Link
               href="/admin"
-              className="inline-flex items-center gap-2 bg-primo-accent text-primo-bg px-6 py-3 rounded-md font-medium hover:opacity-90 transition-opacity"
+              className="inline-flex items-center gap-2 bg-primo-accent text-white px-6 py-3 rounded-full font-semibold hover:opacity-90 transition-opacity"
             >
               <LayoutGrid className="h-4 w-4" />
-              Ir al Admin
+              Go to Admin
             </Link>
             <Link
               href="/torque"
-              className="inline-flex items-center gap-2 border border-primo-border hover:border-primo-muted text-primo-text px-6 py-3 rounded-md font-medium transition-colors"
+              className="inline-flex items-center gap-2 text-primo-navy font-semibold hover:text-primo-accent transition-colors"
             >
-              Ver workspace de demo
-              <ArrowRight className="h-4 w-4" />
+              See the demo
+              <ChevronRight className="h-4 w-4" />
             </Link>
           </div>
         </ShellCentered>
       );
     }
 
-    // Miembro de varios → selector
     if (myWorkspaces.length > 1) {
       return (
         <ShellCentered>
-          <h1 className="font-display text-4xl tracking-tight mb-2">
-            SELECCIONA TU WORKSPACE
+          <h1 className="font-sans font-extrabold text-4xl tracking-tight text-primo-navy mb-2">
+            Select your workspace
           </h1>
           <p className="text-primo-muted mb-8">
-            Tienes acceso a {myWorkspaces.length} workspaces.
+            You have access to {myWorkspaces.length} workspaces.
           </p>
           <div className="grid sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
             {myWorkspaces.map((w) => (
               <Link
                 key={w.id}
                 href={`/${w.slug}`}
-                className="flex items-center gap-3 bg-primo-surface border border-primo-border hover:border-primo-muted rounded-lg p-4 transition-colors text-left"
+                className="flex items-center gap-3 bg-primo-surface border border-primo-border hover:border-primo-accent rounded-2xl p-4 transition-colors text-left"
               >
                 <div
-                  className="h-10 w-10 rounded-md flex items-center justify-center font-display text-lg shrink-0"
+                  className="h-10 w-10 rounded-md flex items-center justify-center font-bold text-lg shrink-0"
                   style={{
                     backgroundColor: w.brand_colors.accent + "20",
                     color: w.brand_colors.accent,
@@ -105,7 +101,7 @@ export default function LandingPage() {
                   {w.name.charAt(0)}
                 </div>
                 <div className="min-w-0">
-                  <div className="font-medium text-primo-text truncate">
+                  <div className="font-semibold text-primo-navy truncate">
                     {w.name}
                   </div>
                   <div className="text-xs font-mono text-primo-muted">
@@ -119,123 +115,178 @@ export default function LandingPage() {
       );
     }
 
-    // Sin workspaces y no es super admin
     if (myWorkspaces.length === 0) {
       return (
         <ShellCentered>
-          <h1 className="font-display text-4xl tracking-tight mb-3">
-            AÚN NO TIENES WORKSPACE
+          <h1 className="font-sans font-extrabold text-4xl tracking-tight text-primo-navy mb-3">
+            No workspace yet
           </h1>
           <p className="text-primo-muted max-w-md mx-auto">
-            Aún no estás asignado a ningún workspace. Contacta a tu
-            administrador para que te dé acceso con tu correo.
+            You&apos;re not assigned to any workspace yet. Contact your
+            administrator to get access with your email.
           </p>
         </ShellCentered>
       );
     }
 
-    // Caso list.length === 1 (no admin): el redirect ya está en curso.
+    // list.length === 1 (no admin): redirect en curso.
     return <CenterSpinner />;
   }
 
-  // ── Usuario NO logueado: landing normal ─────────────────────
+  // ── Usuario NO logueado: landing ────────────────────────────
   return (
-    <main className="min-h-screen bg-primo-bg">
-      {/* Header */}
-      <header className="border-b border-primo-border">
+    <main className="min-h-screen bg-primo-bg text-primo-navy">
+      {/* NAV */}
+      <header className="sticky top-0 z-50 bg-primo-bg/90 backdrop-blur-sm border-b border-primo-border">
         <div className="container mx-auto flex h-16 items-center justify-between px-6">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={PRIMO_LOGO_URL}
               alt="Primo AI Studio"
-              className="h-10 w-auto rounded-md"
+              className="h-8 w-auto rounded-md"
             />
-            <span className="font-display text-xl tracking-wider">
+            <span className="font-sans font-bold tracking-tight text-lg">
               PRIMO AI STUDIO
             </span>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-5">
             <Link
               href="/sign-in"
-              className="text-sm text-primo-muted hover:text-primo-text transition-colors"
+              className="text-sm font-semibold text-primo-muted hover:text-primo-navy transition-colors"
             >
-              Iniciar sesión
+              Sign in
             </Link>
             <Link
               href="/sign-up"
-              className="text-sm bg-primo-accent hover:bg-primo-accent/90 text-primo-bg font-medium px-4 py-2 rounded-md transition-colors"
+              className="inline-flex items-center gap-1.5 bg-primo-accent text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:opacity-90 transition-opacity"
             >
-              Empezar
+              Get started
             </Link>
           </div>
         </div>
       </header>
 
-      {/* Hero */}
-      <section className="container mx-auto px-6 pt-24 pb-32">
-        <div className="max-w-3xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 bg-primo-surface border border-primo-border rounded-full px-4 py-1.5 text-xs text-primo-muted mb-8">
-            <span className="h-1.5 w-1.5 rounded-full bg-primo-accent animate-pulse" />
-            Plataforma de generación visual con IA
-          </div>
+      {/* HERO */}
+      <section className="container mx-auto px-6 min-h-[70vh] flex flex-col items-center justify-center text-center py-24">
+        <p className="text-xs uppercase tracking-widest font-semibold text-primo-muted mb-6">
+          Visual content, on-brand, at scale.
+        </p>
 
-          <h1 className="font-display text-6xl md:text-8xl tracking-tight mb-6 leading-[0.95]">
-            DISEÑO PREMIUM
-            <br />
-            <span className="text-primo-accent">EN SEGUNDOS</span>
-          </h1>
+        <h1 className="max-w-4xl leading-tight">
+          <span className="font-sans font-extrabold text-5xl md:text-7xl text-primo-navy">
+            Generate content that looks like{" "}
+          </span>
+          <span className="font-script text-5xl md:text-7xl text-primo-accent">
+            every client made it themselves.
+          </span>
+        </h1>
 
-          <p className="text-lg text-primo-muted max-w-xl mx-auto mb-10">
-            Genera thumbnails, flyers y assets visuales consistentes con la
-            identidad de cada marca. Tu equipo crea contenido premium 10x más
-            rápido.
-          </p>
+        <p className="max-w-2xl mx-auto text-lg text-primo-muted mt-8 leading-relaxed">
+          Primo AI Studio learns each brand&apos;s visual DNA — colors,
+          typography, references — and generates thumbnails, flyers, and
+          creative assets that stay perfectly consistent. Your team ships 10x
+          faster without breaking the brand.
+        </p>
 
-          <div className="flex items-center justify-center gap-4">
-            <Link
-              href="/torque"
-              className="inline-flex items-center gap-2 bg-primo-accent hover:bg-primo-accent/90 text-primo-bg px-6 py-3 rounded-md font-medium transition-colors"
-            >
-              Ver demo de Torque
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-            <Link
-              href="/sign-in"
-              className="inline-flex items-center gap-2 border border-primo-border hover:border-primo-muted text-primo-text px-6 py-3 rounded-md font-medium transition-colors"
-            >
-              Iniciar sesión
-            </Link>
-          </div>
+        <div className="flex items-center justify-center gap-6 mt-12">
+          <Link
+            href="/sign-up"
+            className="inline-flex items-center gap-2 bg-primo-accent text-white px-8 py-4 rounded-full font-semibold hover:opacity-90 transition-opacity"
+          >
+            Get started
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+          <Link
+            href="/torque"
+            className="group inline-flex items-center gap-1.5 text-primo-navy font-semibold"
+          >
+            <span className="border-b-2 border-transparent group-hover:border-primo-accent transition-colors">
+              See the demo
+            </span>
+            <ChevronRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
+          </Link>
         </div>
+      </section>
 
-        {/* Features */}
-        <div className="grid md:grid-cols-3 gap-6 mt-32 max-w-4xl mx-auto">
-          <FeatureCard
-            icon={<Sparkles className="h-5 w-5" />}
-            title="Multi-Marca"
-            description="Cada cliente con su propio workspace, branding y estilos signature pre-cargados."
+      {/* HOW IT WORKS */}
+      <section className="container mx-auto px-6 py-24">
+        <p className="text-xs uppercase tracking-widest font-semibold text-primo-muted text-center mb-12">
+          How it works
+        </p>
+        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <HowCard
+            icon={<Palette className="h-6 w-6" />}
+            iconBg="#E55B3C"
+            title="One platform, every brand"
+            description="Each client gets their own workspace with custom colors, typography, and visual references. Switch between brands without losing context."
           />
-          <FeatureCard
-            icon={<Zap className="h-5 w-5" />}
-            title="Generación Instantánea"
-            description="Sube una imagen y un título. En segundos recibes prompts e imágenes finales listas."
+          <HowCard
+            icon={<Sparkles className="h-6 w-6" />}
+            iconBg="#F4C842"
+            title="AI that learns your style"
+            description="Upload past work and the system extracts the visual DNA automatically. Every generation stays consistent with what your brand actually looks like."
           />
-          <FeatureCard
-            icon={<Shield className="h-5 w-5" />}
-            title="Consistencia Garantizada"
-            description="El sistema aprende del ADN visual de cada marca y nunca rompe la identidad."
+          <HowCard
+            icon={<Zap className="h-6 w-6" />}
+            iconBg="#8DAA7B"
+            title="From hours to seconds"
+            description="What used to take a designer 30 minutes now happens in 30 seconds. Your team focuses on strategy, the AI handles execution."
           />
         </div>
       </section>
 
-      {/* Footer */}
+      {/* CTA FINAL */}
+      <section className="bg-primo-surfaceAlt rounded-3xl mx-6 my-20 py-20 px-6 text-center">
+        <h2 className="font-sans font-extrabold text-4xl text-primo-navy">
+          Ready to scale your creative output?
+        </h2>
+        <p className="text-primo-muted text-lg mt-4">
+          Set up your first workspace in 5 minutes.
+        </p>
+        <Link
+          href="/sign-up"
+          className="inline-flex items-center gap-2 bg-primo-accent text-white px-8 py-4 rounded-full font-semibold hover:opacity-90 transition-opacity mt-8"
+        >
+          Get started
+          <ArrowRight className="h-4 w-4" />
+        </Link>
+      </section>
+
+      {/* FOOTER */}
       <footer className="border-t border-primo-border py-8">
         <div className="container mx-auto px-6 text-center text-sm text-primo-muted">
-          Primo AI Studio · Powered by Claude
+          © 2026 Primo AI Studio · Made in El Paso, TX
         </div>
       </footer>
     </main>
+  );
+}
+
+function HowCard({
+  icon,
+  iconBg,
+  title,
+  description,
+}: {
+  icon: React.ReactNode;
+  iconBg: string;
+  title: string;
+  description: string;
+}) {
+  return (
+    <div className="bg-primo-surface border border-primo-border rounded-2xl p-8">
+      <div
+        className="h-12 w-12 rounded-full flex items-center justify-center text-white"
+        style={{ backgroundColor: iconBg }}
+      >
+        {icon}
+      </div>
+      <h3 className="font-sans font-bold text-xl text-primo-navy mt-6">
+        {title}
+      </h3>
+      <p className="text-primo-muted mt-3 leading-relaxed">{description}</p>
+    </div>
   );
 }
 
@@ -252,14 +303,14 @@ function ShellCentered({ children }: { children: React.ReactNode }) {
     <main className="min-h-screen bg-primo-bg flex flex-col">
       <header className="border-b border-primo-border">
         <div className="container mx-auto flex h-16 items-center px-6">
-          <Link href="/" className="flex items-center gap-3">
+          <Link href="/" className="flex items-center gap-2.5">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={PRIMO_LOGO_URL}
               alt="Primo AI Studio"
-              className="h-9 w-auto rounded-md"
+              className="h-8 w-auto rounded-md"
             />
-            <span className="font-display text-lg tracking-wider">
+            <span className="font-sans font-bold tracking-tight text-lg text-primo-navy">
               PRIMO AI STUDIO
             </span>
           </Link>
@@ -269,25 +320,5 @@ function ShellCentered({ children }: { children: React.ReactNode }) {
         <div>{children}</div>
       </div>
     </main>
-  );
-}
-
-function FeatureCard({
-  icon,
-  title,
-  description,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-}) {
-  return (
-    <div className="bg-primo-surface border border-primo-border rounded-lg p-6">
-      <div className="h-10 w-10 rounded-md bg-primo-accent/10 text-primo-accent flex items-center justify-center mb-4">
-        {icon}
-      </div>
-      <h3 className="font-semibold mb-2">{title}</h3>
-      <p className="text-sm text-primo-muted leading-relaxed">{description}</p>
-    </div>
   );
 }

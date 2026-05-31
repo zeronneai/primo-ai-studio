@@ -1,7 +1,22 @@
 import type { Metadata } from "next";
+import { Nunito_Sans, Caveat } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
-import { dark } from "@clerk/themes";
 import "./globals.css";
+
+const nunito = Nunito_Sans({
+  subsets: ["latin"],
+  weight: ["400", "600", "700", "800"],
+  variable: "--font-nunito",
+  display: "swap",
+  adjustFontFallback: false,
+});
+
+const caveat = Caveat({
+  subsets: ["latin"],
+  weight: ["600", "700"],
+  variable: "--font-caveat",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Primo AI Studio",
@@ -16,17 +31,17 @@ export default function RootLayout({
   return (
     <ClerkProvider
       appearance={{
-        baseTheme: dark,
         variables: {
-          colorPrimary: "#F4C842",
-          colorBackground: "#0F1E2D",
-          colorInputBackground: "#1A2E3F",
-          colorInputText: "#fafafa",
+          colorPrimary: "#E55B3C",
+          colorBackground: "#FFFFFF",
+          colorInputBackground: "#FAF0DD",
+          colorInputText: "#1A2E3F",
+          colorText: "#1A2E3F",
         },
       }}
     >
-      <html lang="es">
-        <body>{children}</body>
+      <html lang="es" className={`${nunito.variable} ${caveat.variable}`}>
+        <body className="font-sans">{children}</body>
       </html>
     </ClerkProvider>
   );

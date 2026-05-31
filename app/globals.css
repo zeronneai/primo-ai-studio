@@ -2,31 +2,28 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Bebas+Neue&family=JetBrains+Mono:wght@400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap");
 
 :root {
-  --font-inter: "Inter", system-ui, sans-serif;
-  --font-bebas: "Bebas Neue", Impact, sans-serif;
   --font-mono: "JetBrains Mono", monospace;
 
-  /* Fallbacks de los colores de workspace (paleta Primo). El layout de
-     /[workspace] sobreescribe estas variables con los colores de la marca.
-     Así, fuera de un workspace, las clases bg-ws-* siguen viéndose bien. */
-  --ws-primary: #0f1e2d;
-  --ws-accent: #f4c842;
-  --ws-accent-secondary: #e55b3c;
-  --ws-bg: #0f1e2d;
-  --ws-surface: #1a2e3f;
-  --ws-border: #2a3e4f;
-  --ws-text: #fafafa;
-  --ws-text-muted: #7a8b9a;
+  /* Fallbacks de los colores de workspace (nueva paleta cream Primo). El
+     layout de /[workspace] sobreescribe estas variables con los colores de
+     la marca. Así, fuera de un workspace, las clases bg-ws-* siguen bien. */
+  --ws-primary: #1a2e3f;
+  --ws-accent: #e55b3c;
+  --ws-accent-secondary: #f4c842;
+  --ws-bg: #f5e6c8;
+  --ws-surface: #ffffff;
+  --ws-border: #e8d5a8;
+  --ws-text: #1a2e3f;
+  --ws-text-muted: #5a6878;
 }
 
 html,
 body {
-  background: #0F1E2D;
-  color: #FAFAFA;
-  font-family: var(--font-inter);
+  background: #F5E6C8;
+  color: #1A2E3F;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -40,14 +37,14 @@ body {
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #0F1E2D;
+  background: #F5E6C8;
 }
 ::-webkit-scrollbar-thumb {
-  background: #2A3E4F;
+  background: #E8D5A8;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3A4E5F;
+  background: #D4BE88;
 }
 
 /* Workspace accent variable inherited */
@@ -70,9 +67,9 @@ body {
 .shimmer {
   background: linear-gradient(
     90deg,
-    #1A2E3F 0%,
-    #2A3E4F 50%,
-    #1A2E3F 100%
+    var(--ws-surface, #ffffff) 0%,
+    var(--ws-border, #e8d5a8) 50%,
+    var(--ws-surface, #ffffff) 100%
   );
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
