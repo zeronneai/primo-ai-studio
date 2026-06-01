@@ -1,4 +1,4 @@
-import type { WorkspaceStyle, ReferenceAsset } from "@/types";
+import type { WorkspaceStyle, ReferenceAsset, ContentType } from "@/types";
 
 // ─────────────────────────────────────────────────────────────
 // CLAUDE MOCK
@@ -12,6 +12,7 @@ type MockGenerationInput = {
   styles: WorkspaceStyle[];
   imageProvided: boolean;
   references?: ReferenceAsset[];
+  contentType?: ContentType;
 };
 
 type MockGenerationOutput = {
@@ -39,11 +40,26 @@ function pickScene(seed: string): string {
 function fillTemplate(
   template: string,
   scene: string,
-  title: string
+  title: string,
+  aspectLabel: string
 ): string {
-  return template
+  const filled = template
     .replace(/\[SCENE\]/g, scene)
     .replace(/\[TITLE\]/g, title.toUpperCase());
+
+  // Si el template aún menciona el formato 4:5 hardcoded, lo reemplazamos
+  // dinámicamente por el del content type elegido. Si no lo menciona, lo
+  // añadimos al final del prompt.
+  const verticalRe = /vertical 4:5 format\.?/i;
+  if (verticalRe.test(filled)) {
+    return filled.replace(verticalRe, `${capitalize(aspectLabel)}.`);
+  }
+  const trimmed = filled.replace(/\s*$/, "").replace(/\.?$/, "");
+  return `${trimmed}. Format: ${aspectLabel}.`;
+}
+
+function capitalize(s: string): string {
+  return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
 // Devuelve el valor más frecuente de una lista (para colores dominantes)
@@ -101,9 +117,17 @@ export async function mockGeneratePrompts(
     ? `${baseScene}. ${referenceContext}`
     : baseScene;
 
+  const aspectLabel =
+    input.contentType?.aspect_label_en ?? "vertical 4:5 portrait format";
+
   const styles: Record<string, string> = {};
   input.styles.forEach((style) => {
-    styles[style.slug] = fillTemplate(style.template_prompt, scene, input.title);
+    styles[style.slug] = fillTemplate(
+      style.template_prompt,
+      scene,
+      input.title,
+      aspectLabel
+    );
   });
 
   return {

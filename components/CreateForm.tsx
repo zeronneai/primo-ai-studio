@@ -2,9 +2,25 @@
 
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Upload, Loader2, Sparkles, Image as ImageIcon, Copy, Check, Wand2 } from "lucide-react";
+import {
+  Upload,
+  Loader2,
+  Sparkles,
+  Image as ImageIcon,
+  Copy,
+  Check,
+  Wand2,
+  Smartphone,
+  Square,
+  MonitorPlay,
+  FileText,
+} from "lucide-react";
 import { saveGeneration } from "@/lib/data/generations-store";
 import { getReferences } from "@/lib/data/references-store";
+import {
+  CONTENT_TYPES,
+  contentTypeToAspectClass,
+} from "@/lib/data/content-types";
 import { downscaleImage, generateId } from "@/lib/utils";
 import { readableTextOn } from "@/lib/utils/palette";
 import type {
@@ -13,6 +29,19 @@ import type {
   Generation,
   ReferenceAsset,
 } from "@/types";
+
+// Mapa de iconos por content type (lucide).
+const CONTENT_ICONS: Record<
+  string,
+  React.ComponentType<{ className?: string }>
+> = {
+  Image: ImageIcon,
+  Smartphone,
+  Square,
+  MonitorPlay,
+  FileText,
+};
+
 
 type GenerationResult = {
   scene_description_es: string;
@@ -35,9 +64,14 @@ export function CreateForm({
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [title, setTitle] = useState("");
   const [context, setContext] = useState("");
+  const [contentTypeSlug, setContentTypeSlug] = useState("thumbnail");
   const [selectedStyles, setSelectedStyles] = useState<string[]>(
     styles.map((s) => s.slug)
   );
+
+  const selectedType =
+    CONTENT_TYPES.find((t) => t.slug === contentTypeSlug) ?? CONTENT_TYPES[0];
+  const aspectClass = contentTypeToAspectClass(selectedType.aspect_ratio);
 
   // Generation state
   const [generating, setGenerating] = useState(false);
@@ -93,6 +127,7 @@ export function CreateForm({
           styleSlugs: selectedStyles,
           hasImage: !!imageFile,
           references,
+          contentTypeSlug,
         }),
       });
 
@@ -114,7 +149,7 @@ export function CreateForm({
       const res = await fetch("/api/generate-image", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt, styleSlug }),
+        body: JSON.stringify({ prompt, styleSlug, contentTypeSlug }),
       });
 
       if (!res.ok) throw new Error("Image generation failed");
@@ -150,6 +185,7 @@ export function CreateForm({
       prompts: result.styles,
       generated_images: generatedImages,
       created_at: new Date().toISOString(),
+      content_type_slug: contentTypeSlug,
     };
     saveGeneration(generation);
     router.push(`/${workspace.slug}/historial`);
@@ -163,6 +199,39 @@ export function CreateForm({
     <div className="space-y-8">
       {/* INPUT FORM */}
       <div className="bg-ws-surface border border-ws-border rounded-xl p-6 space-y-6">
+        {/* Content type */}
+        <div>
+          <label className="block text-sm font-medium mb-2">
+            Tipo de contenido
+          </label>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
+            {CONTENT_TYPES.map((type) => {
+              const isSelected = contentTypeSlug === type.slug;
+              const Icon = CONTENT_ICONS[type.icon_name] ?? ImageIcon;
+              return (
+                <button
+                  key={type.slug}
+                  type="button"
+                  onClick={() => setContentTypeSlug(type.slug)}
+                  className="flex flex-col items-center gap-1.5 text-center p-3 rounded-lg border-2 transition-all"
+                  style={{
+                    backgroundColor: isSelected ? accent + "10" : "transparent",
+                    borderColor: isSelected ? accent : "var(--ws-border)",
+                  }}
+                >
+                  <Icon className="h-5 w-5" />
+                  <span className="text-xs font-medium leading-tight">
+                    {type.label}
+                  </span>
+                  <span className="text-[10px] font-mono text-ws-text-muted">
+                    {type.aspect_ratio}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         {/* Image upload */}
         <div>
           <label className="block text-sm font-medium mb-2">
@@ -182,7 +251,7 @@ export function CreateForm({
             ) : (
               <div className="text-center text-ws-text-muted">
                 <Upload className="h-8 w-8 mx-auto mb-2" />
-                <p className="text-sm">Click para subir foto del atleta/escena</p>
+                <p className="text-sm">Click para subir una imagen de referencia</p>
                 <p className="text-xs mt-1">Sin imagen también funciona</p>
               </div>
             )}
@@ -199,7 +268,7 @@ export function CreateForm({
         {/* Title */}
         <div>
           <label className="block text-sm font-medium mb-2">
-            Título del thumbnail <span className="text-ws-accent">*</span>
+            Título del contenido <span className="text-ws-accent">*</span>
           </label>
           <input
             type="text"
@@ -376,7 +445,7 @@ export function CreateForm({
                     <span className="text-xs text-ws-text-muted uppercase tracking-wider">
                       Imagen generada
                     </span>
-                    <div className="aspect-[4/5] bg-ws-bg border border-ws-border rounded-md overflow-hidden relative">
+                    <div className={`${aspectClass} bg-ws-bg border border-ws-border rounded-md overflow-hidden relative`}>
                       {generatedImage ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img

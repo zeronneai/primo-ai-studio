@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getWorkspace, getWorkspaceStyles } from "@/lib/data/workspaces";
+import { getContentType } from "@/lib/data/content-types";
 import { mockGeneratePrompts } from "@/lib/mocks/claude";
 
 const DEMO_MODE = process.env.DEMO_MODE !== "false";
@@ -7,8 +8,15 @@ const DEMO_MODE = process.env.DEMO_MODE !== "false";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { workspaceSlug, title, context, styleSlugs, hasImage, references } =
-      body;
+    const {
+      workspaceSlug,
+      title,
+      context,
+      styleSlugs,
+      hasImage,
+      references,
+      contentTypeSlug,
+    } = body;
 
     if (!workspaceSlug || !title || !styleSlugs?.length) {
       return NextResponse.json(
@@ -45,6 +53,7 @@ export async function POST(req: NextRequest) {
         styles: selectedStyles,
         imageProvided: !!hasImage,
         references: Array.isArray(references) ? references : [],
+        contentType: getContentType(contentTypeSlug),
       });
       return NextResponse.json(result);
     }

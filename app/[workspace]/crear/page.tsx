@@ -41,7 +41,7 @@ export default function CrearPage() {
           {workspace.name} · Crear
         </div>
         <h1 className="font-display text-4xl tracking-tight">
-          NUEVO THUMBNAIL
+          GENERAR CONTENIDO
         </h1>
       </div>
 

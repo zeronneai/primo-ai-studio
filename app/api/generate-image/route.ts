@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { mockGenerateImage } from "@/lib/mocks/higgsfield";
+import { getContentType } from "@/lib/data/content-types";
 
 const DEMO_MODE = process.env.DEMO_MODE !== "false";
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { prompt, styleSlug } = body;
+    const { prompt, styleSlug, contentTypeSlug } = body;
 
     if (!prompt || !styleSlug) {
       return NextResponse.json(
@@ -16,7 +17,8 @@ export async function POST(req: NextRequest) {
     }
 
     if (DEMO_MODE) {
-      const imageUrl = await mockGenerateImage(prompt, styleSlug);
+      const aspectRatio = getContentType(contentTypeSlug).aspect_ratio;
+      const imageUrl = await mockGenerateImage(prompt, styleSlug, aspectRatio);
       return NextResponse.json({ imageUrl });
     }
 

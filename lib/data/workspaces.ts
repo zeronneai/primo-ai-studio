@@ -41,7 +41,7 @@ export const WORKSPACE_STYLES: WorkspaceStyle[] = [
     slug: "estilo_2",
     description:
       "Texto masivo italic ultra-condensed inclinado -8°, atleta encima rompiendo la tipografía. Vibe Nike x MLB training raw energy.",
-    template_prompt: `Indoor baseball facility photo of [SCENE]. Massive italic ultra-condensed white text "[TITLE]" tilted -8 degrees filling entire frame behind the subjects. Subjects/players cutout layered ON TOP breaking through the typography. One key word from the title accented in electric royal blue (#2E7AF0). Small "TORQUE" logo top right corner. Dark navy overall tone (#080f1e). Raw Nike x MLB training energy. Vertical 4:5 format. High contrast, dramatic lighting, athletic editorial.`,
+    template_prompt: `Indoor baseball facility photo of [SCENE]. Massive italic ultra-condensed white text "[TITLE]" tilted -8 degrees filling entire frame behind the subjects. Subjects/players cutout layered ON TOP breaking through the typography. One key word from the title accented in electric royal blue (#2E7AF0). Small "TORQUE" logo top right corner. Dark navy overall tone (#080f1e). Raw Nike x MLB training energy. High contrast, dramatic lighting, athletic editorial.`,
     sort_order: 1,
   },
   {
@@ -51,7 +51,7 @@ export const WORKSPACE_STYLES: WorkspaceStyle[] = [
     slug: "estilo_3",
     description:
       "Bloques de texto apilados (top/middle/bottom), atleta integrado rompiendo límites del texto. Estilo ESPN The Magazine.",
-    template_prompt: `Indoor baseball training photo of [SCENE]. Stacked text block composition: first word of "[TITLE]" huge white letters top third, middle words medium size on a solid navy blue horizontal bar middle, last word massive white bottom third. Subjects integrated into center breaking all text boundaries. Clean thin white rule lines between sections. TORQUE wordmark subtle bottom left. ESPN The Magazine editorial sports style. Vertical 4:5 format. High contrast, cinematic, premium athletic editorial.`,
+    template_prompt: `Indoor baseball training photo of [SCENE]. Stacked text block composition: first word of "[TITLE]" huge white letters top third, middle words medium size on a solid navy blue horizontal bar middle, last word massive white bottom third. Subjects integrated into center breaking all text boundaries. Clean thin white rule lines between sections. TORQUE wordmark subtle bottom left. ESPN The Magazine editorial sports style. High contrast, cinematic, premium athletic editorial.`,
     sort_order: 2,
   },
 ];

@@ -47,16 +47,6 @@ export default function WorkspaceLayout({
     const hasAccess =
       isSuperAdmin || canAccessWorkspace(user ?? email, workspace.id);
 
-    // eslint-disable-next-line no-console
-    console.log("[Workspace gate]", {
-      isSuperAdmin,
-      email,
-      hasMetadataRole: (user?.publicMetadata as { role?: string } | undefined)
-        ?.role,
-      workspaceId: workspace.id,
-      hasAccess,
-    });
-
     if (hasAccess) {
       setGate({ kind: "ok", workspace });
       return;

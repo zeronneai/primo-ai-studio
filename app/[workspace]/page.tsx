@@ -55,7 +55,7 @@ export default function WorkspacePage() {
           {workspace.name.toUpperCase()}
         </h1>
         <p className="text-ws-text-muted">
-          Generador de thumbnails y assets visuales · {workspace.industry}
+          Generador de contenido visual · {workspace.industry}
         </p>
       </div>
 
@@ -73,10 +73,11 @@ export default function WorkspacePage() {
               </span>
             </div>
             <h2 className="font-display text-3xl tracking-tight mb-1">
-              CREAR NUEVO THUMBNAIL
+              CREAR NUEVO CONTENIDO
             </h2>
             <p className="text-ws-text-muted text-sm">
-              Sube una imagen + título → recibe prompts e imágenes en segundos
+              Sube una imagen de referencia + título → recibe prompts e imágenes
+              en el formato que necesites
             </p>
           </div>
           <ArrowRight className="h-6 w-6 text-ws-text-muted group-hover:translate-x-1 transition-transform" />

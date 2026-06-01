@@ -62,6 +62,16 @@ export type ReferenceAsset = {
   created_at?: string;
 };
 
+export type ContentType = {
+  slug: string;
+  label: string;
+  description: string;
+  aspect_ratio: string; // ej. "4:5"
+  dimensions: string; // ej. "1080x1350"
+  aspect_label_en: string; // frase para el prompt de la IA
+  icon_name: string; // nombre de icono lucide-react
+};
+
 export type Generation = {
   id: string;
   workspace_id: string;
@@ -72,4 +82,5 @@ export type Generation = {
   prompts: Record<string, string>;
   generated_images: Record<string, string>;
   created_at: string;
+  content_type_slug?: string;
 };
