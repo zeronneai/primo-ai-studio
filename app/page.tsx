@@ -8,10 +8,12 @@ import {
   ChevronRight,
   Loader2,
   LayoutGrid,
+  LogOut,
   Palette,
   Sparkles,
   Zap,
 } from "lucide-react";
+import { useClerk } from "@clerk/nextjs";
 import { useSuperAdminContext } from "@/lib/auth/hooks";
 import { getUserWorkspaces } from "@/lib/auth/permissions";
 import { getWorkspaceById } from "@/lib/data/workspaces-store";
@@ -22,6 +24,7 @@ const PRIMO_LOGO_URL =
 
 export default function LandingPage() {
   const router = useRouter();
+  const { signOut } = useClerk();
   const { isLoaded, isSuperAdmin, email, user } = useSuperAdminContext();
   const isSignedIn = !!user;
 
@@ -125,6 +128,18 @@ export default function LandingPage() {
             You&apos;re not assigned to any workspace yet. Contact your
             administrator to get access with your email.
           </p>
+          {email && (
+            <p className="text-sm text-primo-muted mt-4">
+              Signed in as <span className="font-medium text-primo-navy">{email}</span>
+            </p>
+          )}
+          <button
+            onClick={() => signOut({ redirectUrl: "/" })}
+            className="inline-flex items-center gap-2 border border-primo-border text-primo-navy hover:bg-primo-surfaceAlt px-6 py-3 rounded-full font-semibold transition-colors mt-6"
+          >
+            <LogOut className="h-4 w-4" />
+            Sign out and use another account
+          </button>
         </ShellCentered>
       );
     }
