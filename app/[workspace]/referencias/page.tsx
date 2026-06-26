@@ -5,6 +5,7 @@ import { notFound, useParams } from "next/navigation";
 import {
   Upload,
   Trash2,
+  Pencil,
   ChevronDown,
   ChevronUp,
   Sparkles,
@@ -29,6 +30,7 @@ export default function ReferenciasPage() {
   const [references, setReferences] = useState<ReferenceAsset[]>([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [editing, setEditing] = useState<ReferenceAsset | null>(null);
   const [expanded, setExpanded] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
 
@@ -56,11 +58,27 @@ export default function ReferenciasPage() {
   function handleSaved() {
     if (!workspace) return;
     refresh(workspace);
-    showToast("Referencia analizada y guardada ✓");
+    showToast(editing ? "Referencia actualizada ✓" : "Referencia guardada ✓");
+  }
+
+  function closeDialog() {
+    setDialogOpen(false);
+    setEditing(null);
+  }
+
+  function openUpload() {
+    setEditing(null);
+    setDialogOpen(true);
+  }
+
+  function openEdit(ref: ReferenceAsset) {
+    setEditing(ref);
+    setDialogOpen(true);
   }
 
   function handleDelete(id: string) {
     if (!workspace) return;
+    if (!confirm("¿Eliminar esta referencia?")) return;
     deleteReference(id);
     refresh(workspace);
     showToast("Referencia eliminada");
@@ -96,7 +114,7 @@ export default function ReferenciasPage() {
           </p>
         </div>
         <button
-          onClick={() => setDialogOpen(true)}
+          onClick={openUpload}
           className="inline-flex items-center gap-2 px-4 py-2.5 rounded-md font-medium transition-opacity hover:opacity-90 shrink-0"
           style={{ backgroundColor: accent, color: onAccent }}
         >
@@ -117,6 +135,24 @@ export default function ReferenciasPage() {
         </p>
       </div>
 
+      {/* Empty state */}
+      {references.length === 0 && (
+        <div className="bg-ws-surface border border-ws-border rounded-lg p-12 text-center">
+          <p className="text-ws-text-muted mb-4">
+            Aún no hay referencias. Sube la primera para enseñarle a la IA el
+            ADN visual de la marca.
+          </p>
+          <button
+            onClick={openUpload}
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-md font-medium transition-opacity hover:opacity-90"
+            style={{ backgroundColor: accent, color: onAccent }}
+          >
+            <Upload className="h-4 w-4" />
+            Subir referencia
+          </button>
+        </div>
+      )}
+
       {/* Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {references.map((ref) => {
@@ -126,30 +162,31 @@ export default function ReferenciasPage() {
               key={ref.id}
               className="bg-ws-surface border border-ws-border rounded-lg overflow-hidden fade-in flex flex-col"
             >
-              <div className="aspect-[4/5] bg-ws-bg relative">
+              <div className="aspect-[4/5] bg-ws-bg relative group">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={ref.image_url}
                   alt={ref.notes}
                   className="w-full h-full object-cover"
                 />
-                {ref.is_user_uploaded && (
-                  <span
-                    className="absolute top-2 left-2 text-[10px] font-medium px-2 py-0.5 rounded-full"
-                    style={{ backgroundColor: accent, color: onAccent }}
+                <div className="absolute top-2 right-2 flex gap-1.5">
+                  <button
+                    onClick={() => openEdit(ref)}
+                    className="h-7 w-7 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center text-white/80 hover:text-white hover:bg-black/80 transition-colors"
+                    aria-label="Editar referencia"
+                    title="Editar"
                   >
-                    Subida por ti
-                  </span>
-                )}
-                {ref.is_user_uploaded && (
+                    <Pencil className="h-3.5 w-3.5" />
+                  </button>
                   <button
                     onClick={() => handleDelete(ref.id)}
-                    className="absolute top-2 right-2 h-7 w-7 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center text-white/80 hover:text-red-400 hover:bg-black/80 transition-colors"
+                    className="h-7 w-7 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center text-white/80 hover:text-red-400 hover:bg-black/80 transition-colors"
                     aria-label="Eliminar referencia"
+                    title="Eliminar"
                   >
                     <Trash2 className="h-3.5 w-3.5" />
                   </button>
-                )}
+                </div>
               </div>
 
               <div className="p-4 flex flex-col flex-1">
@@ -251,12 +288,13 @@ export default function ReferenciasPage() {
         })}
       </div>
 
-      {/* Upload dialog */}
+      {/* Upload / edit dialog */}
       {dialogOpen && (
         <UploadReferenceDialog
           workspace={workspace}
           styles={styles}
-          onClose={() => setDialogOpen(false)}
+          editing={editing}
+          onClose={closeDialog}
           onSaved={handleSaved}
         />
       )}

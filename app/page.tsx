@@ -168,15 +168,9 @@ export default function LandingPage() {
           <div className="flex items-center gap-5">
             <Link
               href="/sign-in"
-              className="text-sm font-semibold text-primo-muted hover:text-primo-navy transition-colors"
-            >
-              Sign in
-            </Link>
-            <Link
-              href="/sign-up"
               className="inline-flex items-center gap-1.5 bg-primo-accent text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:opacity-90 transition-opacity"
             >
-              Get started
+              Iniciar sesión
             </Link>
           </div>
         </div>
@@ -206,26 +200,29 @@ export default function LandingPage() {
 
         <div className="flex items-center justify-center gap-6 mt-12">
           <Link
-            href="/sign-up"
+            href="/sign-in"
             className="inline-flex items-center gap-2 bg-primo-accent text-white px-8 py-4 rounded-full font-semibold hover:opacity-90 transition-opacity"
           >
-            Get started
+            Iniciar sesión
             <ArrowRight className="h-4 w-4" />
           </Link>
-          <Link
-            href="/torque"
+          <a
+            href="#how-it-works"
             className="group inline-flex items-center gap-1.5 text-primo-navy font-semibold"
           >
             <span className="border-b-2 border-transparent group-hover:border-primo-accent transition-colors">
-              See the demo
+              Ver cómo funciona
             </span>
             <ChevronRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
-          </Link>
+          </a>
         </div>
       </section>
 
       {/* HOW IT WORKS */}
-      <section className="container mx-auto px-6 py-24">
+      <section
+        id="how-it-works"
+        className="container mx-auto px-6 py-24 scroll-mt-20"
+      >
         <p className="text-xs uppercase tracking-widest font-semibold text-primo-muted text-center mb-12">
           How it works
         </p>
@@ -254,24 +251,36 @@ export default function LandingPage() {
       {/* CTA FINAL */}
       <section className="bg-primo-surfaceAlt rounded-3xl mx-6 my-20 py-20 px-6 text-center">
         <h2 className="font-sans font-extrabold text-4xl text-primo-navy">
-          Ready to scale your creative output?
+          ¿Eres cliente de Primo?
         </h2>
         <p className="text-primo-muted text-lg mt-4">
-          Set up your first workspace in 5 minutes.
+          Inicia sesión para acceder a tu workspace y empezar a crear.
         </p>
         <Link
-          href="/sign-up"
+          href="/sign-in"
           className="inline-flex items-center gap-2 bg-primo-accent text-white px-8 py-4 rounded-full font-semibold hover:opacity-90 transition-opacity mt-8"
         >
-          Get started
+          Iniciar sesión
           <ArrowRight className="h-4 w-4" />
         </Link>
+        <p className="text-sm text-primo-muted mt-8">
+          Primo AI Studio es una plataforma por invitación.{" "}
+          <a
+            href="https://primostudio.us"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold text-primo-accent hover:underline"
+          >
+            ¿Interesado? Contáctanos.
+          </a>
+        </p>
       </section>
 
       {/* FOOTER */}
       <footer className="border-t border-primo-border py-8">
         <div className="container mx-auto px-6 text-center text-sm text-primo-muted">
-          © 2026 Primo AI Studio · Made in El Paso, TX
+          © 2026 Primo AI Studio · Made in El Paso, TX · Plataforma por
+          invitación
         </div>
       </footer>
     </main>

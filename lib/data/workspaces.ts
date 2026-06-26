@@ -56,31 +56,9 @@ export const WORKSPACE_STYLES: WorkspaceStyle[] = [
   },
 ];
 
-export const REFERENCE_ASSETS: ReferenceAsset[] = [
-  // Pre-cargamos referencias visuales con URLs de placeholder
-  // (en producción real serían URLs de Supabase Storage)
-  {
-    id: "ref_1",
-    workspace_id: "ws_torque",
-    image_url: "https://images.unsplash.com/photo-1566577739112-5180d4bf9390?w=800",
-    style_slug: "estilo_2",
-    notes: "Referencia clásica - texto inclinado con coach + atleta",
-  },
-  {
-    id: "ref_2",
-    workspace_id: "ws_torque",
-    image_url: "https://images.unsplash.com/photo-1508344928928-7165b67de128?w=800",
-    style_slug: "estilo_3",
-    notes: "Referencia editorial apilado - parent testimonial",
-  },
-  {
-    id: "ref_3",
-    workspace_id: "ws_torque",
-    image_url: "https://images.unsplash.com/photo-1592664474498-bd3b1f8f8c98?w=800",
-    style_slug: "estilo_2",
-    notes: "Training intenso - acción dinámica",
-  },
-];
+// Sin referencias seed: cada workspace empieza limpio. El admin/owner
+// sube las suyas, y todas viven en localStorage (editables/eliminables).
+export const REFERENCE_ASSETS: ReferenceAsset[] = [];
 
 // Helpers
 // En el server, el store solo ve el seed (no hay localStorage), así que el

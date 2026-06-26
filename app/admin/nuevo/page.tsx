@@ -143,13 +143,11 @@ function QuickCreate() {
       };
 
       saveWorkspace(workspace);
-      // Sin estilos: el cliente los agrega desde su workspace.
       addMember(workspace.id, cleanEmail, "owner");
 
-      showToast(
-        `Workspace creado. Comparte este link con el cliente: app.primoaistudio.com/${cleanSlug}`
-      );
-      router.push("/admin");
+      showToast("Workspace creado. Ahora configúralo antes de invitar al cliente.");
+      // White-glove: el admin lo arma de una vez antes de dar acceso.
+      router.push(`/${cleanSlug}/configuracion`);
     } catch (e) {
       console.error(e);
       showToast("Error al crear. Intenta de nuevo.", "error");
@@ -222,8 +220,8 @@ function QuickCreate() {
         </div>
 
         <p className="text-xs text-primo-muted leading-relaxed">
-          El cliente completará el resto (logo, colores, estilos, referencias)
-          desde su workspace.
+          Después de crear el workspace, configúralo tú mismo (logo, colores,
+          estilos, referencias) antes de dar acceso al cliente.
         </p>
 
         <div className="pt-2">

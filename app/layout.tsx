@@ -33,7 +33,7 @@ export default function RootLayout({
         },
       }}
     >
-      <html lang="es" className={nunito.variable}>
+      <html lang="es" className={`${nunito.variable} scroll-smooth`}>
         <body className="font-sans">{children}</body>
       </html>
     </ClerkProvider>

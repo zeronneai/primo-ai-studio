@@ -2,14 +2,20 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Sparkles, ArrowRight, X } from "lucide-react";
-import { useIsWorkspaceOwner } from "@/lib/auth/hooks";
+import { Sparkles, ArrowRight, X, Settings } from "lucide-react";
+import { useIsWorkspaceOwner, useIsSuperAdmin } from "@/lib/auth/hooks";
 import { readableTextOn } from "@/lib/utils/palette";
 import type { Workspace, WorkspaceStyle, ReferenceAsset } from "@/types";
 
-// Banner de bienvenida que ve SOLO el owner cuando su workspace está
-// "vacío" (sin logo, sin estilos, sin referencias subidas). Se puede
-// descartar y queda recordado en localStorage por workspace.
+/** Un workspace está "configurado" si tiene logo, ≥1 estilo o ≥1 referencia. */
+export function isWorkspaceConfigured(
+  workspace: Workspace,
+  styles: WorkspaceStyle[],
+  references: ReferenceAsset[]
+): boolean {
+  return !!workspace.logo_url || styles.length > 0 || references.length > 0;
+}
+
 export function WorkspaceOnboardingBanner({
   workspace,
   styles,
@@ -20,6 +26,7 @@ export function WorkspaceOnboardingBanner({
   references: ReferenceAsset[];
 }) {
   const isOwner = useIsWorkspaceOwner(workspace.id);
+  const isSuperAdmin = useIsSuperAdmin();
   const [dismissed, setDismissed] = useState(true);
 
   const dismissKey = `primo_dismissed_onboarding_${workspace.id}`;
@@ -28,57 +35,93 @@ export function WorkspaceOnboardingBanner({
     setDismissed(localStorage.getItem(dismissKey) === "1");
   }, [dismissKey]);
 
-  const hasLogo = !!workspace.logo_url;
-  const hasStyles = styles.length > 0;
-  const hasUploadedRefs = references.some((r) => r.is_user_uploaded);
-  const isEmpty = !hasLogo && !hasStyles && !hasUploadedRefs;
-
-  if (!isOwner || !isEmpty || dismissed) return null;
-
+  const configured = isWorkspaceConfigured(workspace, styles, references);
   const accent = workspace.brand_colors.accent;
   const onAccent = readableTextOn(accent);
+  const configHref = `/${workspace.slug}/configuracion`;
 
   function dismiss() {
     localStorage.setItem(dismissKey, "1");
     setDismissed(true);
   }
 
-  return (
-    <div
-      className="relative flex items-start gap-4 rounded-2xl p-5 mb-8 border bg-ws-accent/10"
-      style={{ borderColor: accent + "55" }}
-    >
+  // ── Super admin viendo un workspace sin configurar (white-glove) ──
+  // Banner estilo admin que NO se descarta (es un to-do real).
+  if (isSuperAdmin && !configured) {
+    return (
       <div
-        className="h-10 w-10 rounded-full flex items-center justify-center shrink-0"
-        style={{ backgroundColor: accent, color: onAccent }}
+        className="flex items-start gap-4 rounded-2xl p-5 mb-8 border bg-ws-accent/10"
+        style={{ borderColor: accent + "55" }}
       >
-        <Sparkles className="h-5 w-5" />
-      </div>
-      <div className="flex-1 min-w-0 pr-6">
-        <h3 className="font-bold text-ws-text">
-          ¡Bienvenido a tu workspace! Completa tu perfil para empezar a generar
-          contenido on-brand.
-        </h3>
-        <p className="text-sm text-ws-text-muted mt-1">
-          Sube tu logo, define tus colores y crea tus primeros estilos
-          signature.
-        </p>
-        <Link
-          href={`/${workspace.slug}/configuracion`}
-          className="inline-flex items-center gap-1.5 mt-4 px-4 py-2 rounded-full text-sm font-semibold hover:opacity-90 transition-opacity"
+        <div
+          className="h-10 w-10 rounded-full flex items-center justify-center shrink-0"
           style={{ backgroundColor: accent, color: onAccent }}
         >
-          Configurar workspace
-          <ArrowRight className="h-4 w-4" />
-        </Link>
+          <Settings className="h-5 w-5" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <h3 className="font-bold text-ws-text">
+            Este workspace aún no está configurado.
+          </h3>
+          <p className="text-sm text-ws-text-muted mt-1">
+            Define logo, colores, estilos y referencias antes de dar acceso al
+            cliente.
+          </p>
+          <Link
+            href={configHref}
+            className="inline-flex items-center gap-1.5 mt-4 px-4 py-2 rounded-full text-sm font-semibold hover:opacity-90 transition-opacity"
+            style={{ backgroundColor: accent, color: onAccent }}
+          >
+            Configurar ahora
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
       </div>
-      <button
-        onClick={dismiss}
-        aria-label="Descartar"
-        className="absolute top-3 right-3 text-ws-text-muted hover:text-ws-text transition-colors"
+    );
+  }
+
+  // ── Owner (cliente) en un workspace sin configurar (raro en white-glove) ──
+  if (isOwner && !configured && !dismissed) {
+    return (
+      <div
+        className="relative flex items-start gap-4 rounded-2xl p-5 mb-8 border bg-ws-accent/10"
+        style={{ borderColor: accent + "55" }}
       >
-        <X className="h-4 w-4" />
-      </button>
-    </div>
-  );
+        <div
+          className="h-10 w-10 rounded-full flex items-center justify-center shrink-0"
+          style={{ backgroundColor: accent, color: onAccent }}
+        >
+          <Sparkles className="h-5 w-5" />
+        </div>
+        <div className="flex-1 min-w-0 pr-6">
+          <h3 className="font-bold text-ws-text">
+            ¡Bienvenido a tu workspace! Completa tu perfil para empezar a generar
+            contenido on-brand.
+          </h3>
+          <p className="text-sm text-ws-text-muted mt-1">
+            Sube tu logo, define tus colores y crea tus primeros estilos
+            signature.
+          </p>
+          <Link
+            href={configHref}
+            className="inline-flex items-center gap-1.5 mt-4 px-4 py-2 rounded-full text-sm font-semibold hover:opacity-90 transition-opacity"
+            style={{ backgroundColor: accent, color: onAccent }}
+          >
+            Configurar workspace
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+        <button
+          onClick={dismiss}
+          aria-label="Descartar"
+          className="absolute top-3 right-3 text-ws-text-muted hover:text-ws-text transition-colors"
+        >
+          <X className="h-4 w-4" />
+        </button>
+      </div>
+    );
+  }
+
+  // Configurado, o member regular → sin banner.
+  return null;
 }

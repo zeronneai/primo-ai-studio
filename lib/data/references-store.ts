@@ -1,18 +1,17 @@
 "use client";
 
-import { getWorkspaceReferences } from "@/lib/data/workspaces";
 import type { ReferenceAsset } from "@/types";
 
 // ─────────────────────────────────────────────────────────────
-// REFERENCES STORE (localStorage para persistir referencias subidas)
-// Combina el seed que vive en el repo (workspaces.ts) con las que el
-// usuario sube. Mismo patrón que generations-store.ts.
+// REFERENCES STORE (localStorage)
+// Todas las referencias son subidas por el usuario y viven en
+// localStorage → todas son editables y eliminables. Ya no hay seed.
 // Cuando llegue Supabase: cambiar implementación, no la interfaz.
 // ─────────────────────────────────────────────────────────────
 
 const STORAGE_KEY = "primo_references";
 
-function readUploaded(): ReferenceAsset[] {
+function readAll(): ReferenceAsset[] {
   if (typeof window === "undefined") return [];
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
@@ -22,60 +21,59 @@ function readUploaded(): ReferenceAsset[] {
   }
 }
 
-function writeUploaded(refs: ReferenceAsset[]): void {
+function writeAll(refs: ReferenceAsset[]): void {
   if (typeof window === "undefined") return;
   localStorage.setItem(STORAGE_KEY, JSON.stringify(refs));
 }
 
-/**
- * Devuelve las referencias del workspace: primero las subidas por el
- * usuario (más recientes arriba) y luego las pre-cargadas (seed).
- */
+/** Referencias del workspace, más recientes primero. */
 export function getReferences(workspaceId: string): ReferenceAsset[] {
-  const seed = getWorkspaceReferences(workspaceId);
-
-  if (typeof window === "undefined") {
-    return seed;
-  }
-
-  const uploaded = readUploaded()
+  return readAll()
     .filter((r) => r.workspace_id === workspaceId)
     .sort(
       (a, b) =>
         new Date(b.created_at ?? 0).getTime() -
         new Date(a.created_at ?? 0).getTime()
     );
-
-  return [...uploaded, ...seed];
 }
 
-/** Cuenta total de referencias (seed + subidas) para un workspace. */
+/** Cuenta de referencias de un workspace. */
 export function countReferences(workspaceId: string): number {
   return getReferences(workspaceId).length;
 }
 
-/** Guarda una referencia subida por el usuario en localStorage. */
+/** Guarda (crea) una referencia nueva. */
 export function saveReference(reference: ReferenceAsset): void {
   if (typeof window === "undefined") return;
   try {
-    const existing = readUploaded();
+    const existing = readAll().filter((r) => r.id !== reference.id);
     const toSave: ReferenceAsset = { ...reference, is_user_uploaded: true };
-    writeUploaded([toSave, ...existing]);
+    writeAll([toSave, ...existing]);
   } catch (e) {
     console.error("Failed to save reference:", e);
   }
 }
 
-/**
- * Elimina una referencia subida por el usuario. Las del seed no se
- * pueden borrar (no viven en localStorage), así que esto es un no-op
- * para ellas.
- */
+/** Actualiza campos de una referencia existente (estilo, notas, imagen…). */
+export function updateReference(
+  id: string,
+  updates: Partial<ReferenceAsset>
+): void {
+  if (typeof window === "undefined") return;
+  try {
+    writeAll(
+      readAll().map((r) => (r.id === id ? { ...r, ...updates, id } : r))
+    );
+  } catch (e) {
+    console.error("Failed to update reference:", e);
+  }
+}
+
+/** Elimina una referencia. */
 export function deleteReference(id: string): void {
   if (typeof window === "undefined") return;
   try {
-    const existing = readUploaded();
-    writeUploaded(existing.filter((r) => r.id !== id));
+    writeAll(readAll().filter((r) => r.id !== id));
   } catch (e) {
     console.error("Failed to delete reference:", e);
   }

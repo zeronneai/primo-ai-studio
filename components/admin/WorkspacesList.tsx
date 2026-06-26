@@ -9,6 +9,7 @@ import {
   deleteWorkspace,
 } from "@/lib/data/workspaces-store";
 import { getMembers, removeAllMembers } from "@/lib/data/members-store";
+import { countReferences } from "@/lib/data/references-store";
 import { useToast } from "@/components/Toast";
 import type { Workspace } from "@/types";
 
@@ -16,6 +17,7 @@ type Row = {
   workspace: Workspace;
   styleCount: number;
   memberCount: number;
+  referenceCount: number;
 };
 
 export function WorkspacesList() {
@@ -29,6 +31,7 @@ export function WorkspacesList() {
         workspace,
         styleCount: getStylesForWorkspace(workspace.id).length,
         memberCount: getMembers(workspace.id).length,
+        referenceCount: countReferences(workspace.id),
       }))
     );
   }
@@ -76,21 +79,19 @@ export function WorkspacesList() {
           <thead>
             <tr className="border-b border-primo-border text-left text-xs uppercase tracking-wider text-primo-muted">
               <th className="px-4 py-3 font-medium">Workspace</th>
+              <th className="px-4 py-3 font-medium">Estado</th>
               <th className="px-4 py-3 font-medium">Slug</th>
-              <th className="px-4 py-3 font-medium">Industry</th>
               <th className="px-4 py-3 font-medium text-center">Estilos</th>
               <th className="px-4 py-3 font-medium text-center">Miembros</th>
               <th className="px-4 py-3 font-medium text-right">Acciones</th>
             </tr>
           </thead>
           <tbody>
-            {rows.map(({ workspace, styleCount, memberCount }) => (
+            {rows.map((row) => (
               <WorkspaceRow
-                key={workspace.id}
-                workspace={workspace}
-                styleCount={styleCount}
-                memberCount={memberCount}
-                onDelete={() => handleDelete(workspace)}
+                key={row.workspace.id}
+                {...row}
+                onDelete={() => handleDelete(row.workspace)}
               />
             ))}
           </tbody>
@@ -104,10 +105,13 @@ function WorkspaceRow({
   workspace,
   styleCount,
   memberCount,
+  referenceCount,
   onDelete,
 }: Row & { onDelete: () => void }) {
   const isCustom = workspace.is_custom === true;
   const accent = workspace.brand_colors.accent;
+  const configured =
+    !!workspace.logo_url || styleCount > 0 || referenceCount > 0;
 
   return (
     <tr className="border-b border-primo-border last:border-0 hover:bg-primo-surfaceAlt/40 transition-colors">
@@ -148,10 +152,22 @@ function WorkspaceRow({
         </div>
       </td>
 
+      <td className="px-4 py-3">
+        {configured ? (
+          <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-full bg-primo-accentGreen/20 text-primo-navy">
+            <span className="h-1.5 w-1.5 rounded-full bg-primo-accentGreen" />
+            Configurado
+          </span>
+        ) : (
+          <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-full bg-primo-accentYellow/25 text-primo-navy">
+            <span className="h-1.5 w-1.5 rounded-full bg-primo-accentYellow" />
+            Sin configurar
+          </span>
+        )}
+      </td>
       <td className="px-4 py-3 font-mono text-xs text-primo-muted">
         /{workspace.slug}
       </td>
-      <td className="px-4 py-3 text-primo-muted">{workspace.industry}</td>
       <td className="px-4 py-3 text-center text-primo-text">{styleCount}</td>
       <td className="px-4 py-3 text-center text-primo-text">{memberCount}</td>
 
