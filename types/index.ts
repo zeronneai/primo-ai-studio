@@ -84,3 +84,42 @@ export type Generation = {
   created_at: string;
   content_type_slug?: string;
 };
+
+export type ContentPillar = {
+  slug: string; // "educacion", "demostracion", etc.
+  label: string;
+  color: string; // hex base; en la UI se usa ws-accent y variantes
+};
+
+export type ContentIdeaFormat =
+  | "reel"
+  | "carrusel"
+  | "post"
+  | "story"
+  | "repost";
+
+export type ContentIdea = {
+  id: string;
+  day: string; // "lunes", "martes", etc.
+  pillar: string; // slug del pilar
+  format: ContentIdeaFormat;
+  title: string;
+  hook: string;
+  specs: string;
+  steps: string[]; // guion / estructura
+  caption: string;
+  hashtags: string[];
+  cta: string;
+  suggested_style_slug?: string;
+  suggested_image_title?: string;
+};
+
+export type WeeklyCalendar = {
+  workspace_id: string;
+  week_start: string; // ISO date del lunes de esa semana
+  theme: string;
+  theme_description: string;
+  ideas: ContentIdea[];
+  trends_used?: string[];
+  generated_at: string;
+};

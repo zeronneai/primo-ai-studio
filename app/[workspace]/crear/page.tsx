@@ -1,14 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, notFound } from "next/navigation";
+import { useParams, notFound, useSearchParams } from "next/navigation";
 import { getWorkspace, getWorkspaceStyles } from "@/lib/data/workspaces";
 import { CreateForm } from "@/components/CreateForm";
 import type { Workspace, WorkspaceStyle } from "@/types";
 
 export default function CrearPage() {
   const params = useParams<{ workspace: string }>();
+  const searchParams = useSearchParams();
   const slug = params.workspace;
+
+  // Prefill desde el calendario (title/style/from).
+  const initialTitle = searchParams.get("title") ?? "";
+  const initialStyle = searchParams.get("style") ?? "";
+  const fromCalendar = searchParams.get("from") === "calendar";
 
   const [workspace, setWorkspace] = useState<Workspace | null>(null);
   const [styles, setStyles] = useState<WorkspaceStyle[]>([]);
@@ -45,7 +51,13 @@ export default function CrearPage() {
         </h1>
       </div>
 
-      <CreateForm workspace={workspace} styles={styles} />
+      <CreateForm
+        workspace={workspace}
+        styles={styles}
+        initialTitle={initialTitle}
+        initialStyle={initialStyle}
+        fromCalendar={fromCalendar}
+      />
     </div>
   );
 }

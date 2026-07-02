@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   Upload,
   Loader2,
@@ -14,6 +15,7 @@ import {
   Square,
   MonitorPlay,
   FileText,
+  CalendarDays,
 } from "lucide-react";
 import { saveGeneration } from "@/lib/data/generations-store";
 import { getReferences } from "@/lib/data/references-store";
@@ -52,9 +54,15 @@ type GenerationResult = {
 export function CreateForm({
   workspace,
   styles,
+  initialTitle = "",
+  initialStyle = "",
+  fromCalendar = false,
 }: {
   workspace: Workspace;
   styles: WorkspaceStyle[];
+  initialTitle?: string;
+  initialStyle?: string;
+  fromCalendar?: boolean;
 }) {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -62,12 +70,16 @@ export function CreateForm({
   // Form state
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState(initialTitle);
   const [context, setContext] = useState("");
   const [contentTypeSlug, setContentTypeSlug] = useState("thumbnail");
-  const [selectedStyles, setSelectedStyles] = useState<string[]>(
-    styles.map((s) => s.slug)
-  );
+  const [selectedStyles, setSelectedStyles] = useState<string[]>(() => {
+    // Si viene un estilo sugerido (desde el calendario) y existe, solo ese.
+    if (initialStyle && styles.some((s) => s.slug === initialStyle)) {
+      return [initialStyle];
+    }
+    return styles.map((s) => s.slug);
+  });
 
   const selectedType =
     CONTENT_TYPES.find((t) => t.slug === contentTypeSlug) ?? CONTENT_TYPES[0];
@@ -197,6 +209,26 @@ export function CreateForm({
 
   return (
     <div className="space-y-8">
+      {/* Banner: viene de una idea del calendario */}
+      {fromCalendar && (
+        <div
+          className="flex items-center gap-3 rounded-xl px-4 py-3 border bg-ws-accent/10"
+          style={{ borderColor: accent + "55" }}
+        >
+          <CalendarDays className="h-4 w-4 shrink-0" style={{ color: accent }} />
+          <span className="text-sm text-ws-text flex-1">
+            Generando desde una idea del calendario.
+          </span>
+          <Link
+            href={`/${workspace.slug}/calendario`}
+            className="text-xs font-medium hover:opacity-80 transition-opacity shrink-0"
+            style={{ color: accent }}
+          >
+            Volver al calendario
+          </Link>
+        </div>
+      )}
+
       {/* INPUT FORM */}
       <div className="bg-ws-surface border border-ws-border rounded-xl p-6 space-y-6">
         {/* Content type */}

@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   Plus,
+  Calendar,
   History,
   Image as ImageIcon,
   Settings,
@@ -16,6 +17,7 @@ import type { Workspace } from "@/types";
 const NAV_ITEMS = [
   { label: "Dashboard", href: "", icon: LayoutDashboard },
   { label: "Crear", href: "/crear", icon: Plus },
+  { label: "Calendario", href: "/calendario", icon: Calendar },
   { label: "Historial", href: "/historial", icon: History },
   { label: "Referencias", href: "/referencias", icon: ImageIcon },
 ];
