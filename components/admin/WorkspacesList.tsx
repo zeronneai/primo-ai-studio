@@ -7,6 +7,7 @@ import {
   getAllWorkspaces,
   getStylesForWorkspace,
   deleteWorkspace,
+  hasBusinessProfile,
 } from "@/lib/data/workspaces-store";
 import { getMembers, removeAllMembers } from "@/lib/data/members-store";
 import { countReferences } from "@/lib/data/references-store";
@@ -18,6 +19,7 @@ type Row = {
   styleCount: number;
   memberCount: number;
   referenceCount: number;
+  profileComplete: boolean;
 };
 
 export function WorkspacesList() {
@@ -32,6 +34,7 @@ export function WorkspacesList() {
         styleCount: getStylesForWorkspace(workspace.id).length,
         memberCount: getMembers(workspace.id).length,
         referenceCount: countReferences(workspace.id),
+        profileComplete: hasBusinessProfile(workspace.id),
       }))
     );
   }
@@ -106,6 +109,7 @@ function WorkspaceRow({
   styleCount,
   memberCount,
   referenceCount,
+  profileComplete,
   onDelete,
 }: Row & { onDelete: () => void }) {
   const isCustom = workspace.is_custom === true;
@@ -153,17 +157,29 @@ function WorkspaceRow({
       </td>
 
       <td className="px-4 py-3">
-        {configured ? (
-          <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-full bg-primo-accentGreen/20 text-primo-navy">
-            <span className="h-1.5 w-1.5 rounded-full bg-primo-accentGreen" />
-            Configurado
+        <div className="flex flex-col items-start gap-1">
+          {configured ? (
+            <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-full bg-primo-accentGreen/20 text-primo-navy">
+              <span className="h-1.5 w-1.5 rounded-full bg-primo-accentGreen" />
+              Configurado
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-full bg-primo-accentYellow/25 text-primo-navy">
+              <span className="h-1.5 w-1.5 rounded-full bg-primo-accentYellow" />
+              Sin configurar
+            </span>
+          )}
+          <span
+            className="text-[10px] text-primo-muted"
+            title={
+              profileComplete
+                ? "Perfil de negocio completo — listo para calendario"
+                : "Falta completar el perfil de negocio (tipo + objetivo)"
+            }
+          >
+            Perfil: {profileComplete ? "Completo" : "Incompleto"}
           </span>
-        ) : (
-          <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-full bg-primo-accentYellow/25 text-primo-navy">
-            <span className="h-1.5 w-1.5 rounded-full bg-primo-accentYellow" />
-            Sin configurar
-          </span>
-        )}
+        </div>
       </td>
       <td className="px-4 py-3 font-mono text-xs text-primo-muted">
         /{workspace.slug}

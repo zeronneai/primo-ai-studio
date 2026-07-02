@@ -40,20 +40,23 @@ export async function POST(req: NextRequest) {
     // REAL MODE: Claude API con web_search tool
     // ─────────────────────────────────────────────────────────
     // 1. Verificar créditos disponibles del workspace (>= CALENDAR_COST).
-    // 2. anthropic.messages.create({
+    // 2. Ensamblar el contexto estratégico completo (perfil de negocio +
+    //    estilos + instrucciones) con buildCalendarContext:
+    //      import { buildCalendarContext } from "@/lib/prompts/calendar-context";
+    //      const system = buildCalendarContext(workspace, styles);
+    // 3. anthropic.messages.create({
     //      model: "claude-...",
-    //      system: workspace.system_prompt + instrucción de calendario,
+    //      system,
     //      tools: [{ type: "web_search_20250305", name: "web_search" }],
     //      messages: [{ role: "user", content:
-    //        `Busca trends actuales, noticias y fechas próximas de la
-    //         industria "${workspace.industry}". Con eso genera un
-    //         calendario semanal (7 días, 1-3 ideas/día) coherente con la
-    //         marca. Devuelve JSON con theme, theme_description, ideas[],
-    //         trends_used[].` }],
+    //        "Genera el calendario semanal de contenido. Primero busca
+    //         trends/noticias/fechas relevantes con web search, luego
+    //         devuelve JSON con theme, theme_description, ideas[],
+    //         trends_used[]." }],
     //    })
-    // 3. Claude busca en la web, razona y genera ideas custom.
-    // 4. Parsear el JSON estructurado → WeeklyCalendar.
-    // 5. Descontar CALENDAR_COST créditos del workspace.
+    // 4. Claude busca en la web, razona y genera ideas custom.
+    // 5. Parsear el JSON estructurado → WeeklyCalendar.
+    // 6. Descontar CALENDAR_COST créditos del workspace.
     return NextResponse.json(
       { error: "Real mode not implemented yet. Set DEMO_MODE=true." },
       { status: 501 }

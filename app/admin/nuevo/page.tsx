@@ -130,15 +130,31 @@ function QuickCreate() {
 
     setSaving(true);
     try {
+      const cleanIndustry = industry.trim() || "General";
       const workspace: Workspace = {
         id: `ws_${Date.now()}`,
         slug: cleanSlug,
         name: cleanName,
         logo_url: null,
         brand_colors: generatePaletteFromPrimary("#475569"),
-        industry: industry.trim() || "General",
+        industry: cleanIndustry,
         monthly_credit_limit: 500,
         system_prompt: DEFAULT_SYSTEM_PROMPT,
+        // Punto de partida del perfil: el industry pre-llena business_type.
+        // El resto se completa en /configuracion.
+        business_profile: {
+          business_type: cleanIndustry,
+          target_audience: "",
+          location: "",
+          main_goal: "",
+          main_goal_detail: "",
+          competitors: "",
+          current_offer: "",
+          content_tone: "",
+          avoid_topics: "",
+          key_differentiators: "",
+          extra_notes: "",
+        },
         is_custom: true,
       };
 

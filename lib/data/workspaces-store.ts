@@ -1,5 +1,5 @@
 import { WORKSPACES, WORKSPACE_STYLES } from "@/lib/data/workspaces";
-import type { Workspace, WorkspaceStyle } from "@/types";
+import type { Workspace, WorkspaceStyle, BusinessProfile } from "@/types";
 
 // ─────────────────────────────────────────────────────────────
 // WORKSPACES STORE (dinámico)
@@ -53,6 +53,24 @@ export function getAllWorkspaces(): Workspace[] {
 
 export function getWorkspaceById(id: string): Workspace | null {
   return getAllWorkspaces().find((w) => w.id === id) ?? null;
+}
+
+// ── Business profile ────────────────────────────────────────
+
+/** Perfil de negocio de un workspace (o null). */
+export function getBusinessProfile(
+  workspaceId: string
+): BusinessProfile | null {
+  return getWorkspaceById(workspaceId)?.business_profile ?? null;
+}
+
+/**
+ * "Listo para calendario": tiene perfil con al menos tipo de negocio y
+ * objetivo principal definidos.
+ */
+export function hasBusinessProfile(workspaceId: string): boolean {
+  const p = getBusinessProfile(workspaceId);
+  return !!p && !!p.business_type.trim() && !!p.main_goal.trim();
 }
 
 export function getWorkspaceBySlug(slug: string): Workspace | null {

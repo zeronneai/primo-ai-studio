@@ -9,6 +9,20 @@ export type WorkspaceColors = {
   textMuted: string; // texto secundario
 };
 
+export type BusinessProfile = {
+  business_type: string; // "Baseball training academy"
+  target_audience: string; // "Padres de atletas 8-18 años, serios"
+  location: string; // "El Paso, TX / border region"
+  main_goal: string; // leads | ventas | awareness | comunidad | otro
+  main_goal_detail: string; // "Llenar clases de verano 2026"
+  competitors: string;
+  current_offer: string;
+  content_tone: string;
+  avoid_topics: string;
+  key_differentiators: string;
+  extra_notes: string; // textarea libre
+};
+
 export type Workspace = {
   id: string;
   slug: string;
@@ -18,6 +32,7 @@ export type Workspace = {
   industry: string;
   monthly_credit_limit: number;
   system_prompt?: string;
+  business_profile?: BusinessProfile;
   is_custom?: boolean;
 };
 

@@ -20,7 +20,34 @@ import {
   DEFAULT_WORKSPACE_COLORS,
 } from "@/lib/utils/palette";
 import { slugify } from "@/lib/utils";
-import type { Workspace, WorkspaceStyle, WorkspaceColors } from "@/types";
+import type {
+  Workspace,
+  WorkspaceStyle,
+  WorkspaceColors,
+  BusinessProfile,
+} from "@/types";
+
+const EMPTY_BUSINESS_PROFILE: BusinessProfile = {
+  business_type: "",
+  target_audience: "",
+  location: "",
+  main_goal: "",
+  main_goal_detail: "",
+  competitors: "",
+  current_offer: "",
+  content_tone: "",
+  avoid_topics: "",
+  key_differentiators: "",
+  extra_notes: "",
+};
+
+const MAIN_GOAL_OPTIONS = [
+  { value: "leads", label: "Generar leads" },
+  { value: "ventas", label: "Ventas directas" },
+  { value: "awareness", label: "Awareness de marca" },
+  { value: "comunidad", label: "Construir comunidad" },
+  { value: "otro", label: "Otro" },
+];
 
 type ColorKey = keyof WorkspaceColors;
 
@@ -55,7 +82,8 @@ export type WorkspaceFormField =
   | "name"
   | "slug"
   | "industry"
-  | "monthly_credit_limit";
+  | "monthly_credit_limit"
+  | "business_profile";
 
 export function WorkspaceForm({
   initialData,
@@ -94,6 +122,10 @@ export function WorkspaceForm({
   const [systemPrompt, setSystemPrompt] = useState(
     initialData?.workspace.system_prompt ?? ""
   );
+  const [profile, setProfile] = useState<BusinessProfile>({
+    ...EMPTY_BUSINESS_PROFILE,
+    ...(initialData?.workspace.business_profile ?? {}),
+  });
   const [colors, setColors] = useState<WorkspaceColors>(
     initialData
       ? withColorFallbacks(initialData.workspace.brand_colors)
@@ -163,6 +195,12 @@ export function WorkspaceForm({
 
     setSaving(true);
     try {
+      // Guardar el perfil solo si tiene algún dato (evita objeto vacío).
+      const trimmedProfile: BusinessProfile = Object.fromEntries(
+        Object.entries(profile).map(([k, v]) => [k, v.trim()])
+      ) as BusinessProfile;
+      const hasProfileData = Object.values(trimmedProfile).some((v) => v);
+
       const workspace: Workspace = {
         id: workspaceId,
         slug,
@@ -172,6 +210,7 @@ export function WorkspaceForm({
         industry: industry.trim(),
         monthly_credit_limit: Math.max(0, Number(creditLimit) || 0),
         system_prompt: systemPrompt.trim() || undefined,
+        business_profile: hasProfileData ? trimmedProfile : undefined,
         is_custom: true,
       };
 
@@ -323,6 +362,183 @@ export function WorkspaceForm({
             className={`${inputCls} leading-relaxed resize-y`}
           />
         </Section>
+
+        {/* d.2) PERFIL DE NEGOCIO */}
+        {!isHidden("business_profile") && (
+          <Section title="Perfil de negocio">
+            <p className="text-sm text-primo-muted mb-5 -mt-2">
+              Este perfil ayuda a la IA a generar ideas de contenido relevantes
+              y buscar tendencias de tu industria. Diferente del system prompt
+              visual (que es para generar imágenes).
+            </p>
+            <div className="space-y-4">
+              <div className="grid sm:grid-cols-2 gap-4">
+                <Field label="Tipo de negocio">
+                  <input
+                    type="text"
+                    value={profile.business_type}
+                    onChange={(e) =>
+                      setProfile((p) => ({
+                        ...p,
+                        business_type: e.target.value,
+                      }))
+                    }
+                    placeholder="Ej. Academia de baseball"
+                    className={inputCls}
+                  />
+                </Field>
+                <Field label="Ubicación" hint="Para trends locales">
+                  <input
+                    type="text"
+                    value={profile.location}
+                    onChange={(e) =>
+                      setProfile((p) => ({ ...p, location: e.target.value }))
+                    }
+                    placeholder="Ej. El Paso, TX / border region"
+                    className={inputCls}
+                  />
+                </Field>
+              </div>
+
+              <Field label="Audiencia objetivo">
+                <textarea
+                  value={profile.target_audience}
+                  onChange={(e) =>
+                    setProfile((p) => ({
+                      ...p,
+                      target_audience: e.target.value,
+                    }))
+                  }
+                  placeholder="Ej. Padres de atletas 8-18 años, serios sobre el desarrollo deportivo"
+                  rows={2}
+                  className={`${inputCls} resize-y`}
+                />
+              </Field>
+
+              <div className="grid sm:grid-cols-2 gap-4">
+                <Field label="Objetivo principal">
+                  <select
+                    value={profile.main_goal}
+                    onChange={(e) =>
+                      setProfile((p) => ({ ...p, main_goal: e.target.value }))
+                    }
+                    className={inputCls}
+                  >
+                    <option value="">Selecciona…</option>
+                    {MAIN_GOAL_OPTIONS.map((o) => (
+                      <option key={o.value} value={o.value}>
+                        {o.label}
+                      </option>
+                    ))}
+                  </select>
+                </Field>
+                <Field label="Detalle del objetivo">
+                  <input
+                    type="text"
+                    value={profile.main_goal_detail}
+                    onChange={(e) =>
+                      setProfile((p) => ({
+                        ...p,
+                        main_goal_detail: e.target.value,
+                      }))
+                    }
+                    placeholder="Ej. Llenar clases de verano 2026"
+                    className={inputCls}
+                  />
+                </Field>
+              </div>
+
+              <div className="grid sm:grid-cols-2 gap-4">
+                <Field label="Tono de contenido">
+                  <input
+                    type="text"
+                    value={profile.content_tone}
+                    onChange={(e) =>
+                      setProfile((p) => ({
+                        ...p,
+                        content_tone: e.target.value,
+                      }))
+                    }
+                    placeholder="Ej. Motivacional, profesional, no payaso"
+                    className={inputCls}
+                  />
+                </Field>
+                <Field label="Temas a evitar">
+                  <input
+                    type="text"
+                    value={profile.avoid_topics}
+                    onChange={(e) =>
+                      setProfile((p) => ({
+                        ...p,
+                        avoid_topics: e.target.value,
+                      }))
+                    }
+                    placeholder="Ej. Política, religión, comparaciones directas"
+                    className={inputCls}
+                  />
+                </Field>
+              </div>
+
+              <div className="grid sm:grid-cols-2 gap-4">
+                <Field label="Competencia" hint="Opcional">
+                  <textarea
+                    value={profile.competitors}
+                    onChange={(e) =>
+                      setProfile((p) => ({
+                        ...p,
+                        competitors: e.target.value,
+                      }))
+                    }
+                    placeholder="Ej. Academias X, Y en la zona"
+                    rows={2}
+                    className={`${inputCls} resize-y`}
+                  />
+                </Field>
+                <Field label="Diferenciadores clave">
+                  <textarea
+                    value={profile.key_differentiators}
+                    onChange={(e) =>
+                      setProfile((p) => ({
+                        ...p,
+                        key_differentiators: e.target.value,
+                      }))
+                    }
+                    placeholder="Ej. Único con tech de tracking, coaches ex-MLB"
+                    rows={2}
+                    className={`${inputCls} resize-y`}
+                  />
+                </Field>
+              </div>
+
+              <Field label="Oferta / promoción actual" hint="Opcional">
+                <input
+                  type="text"
+                  value={profile.current_offer}
+                  onChange={(e) =>
+                    setProfile((p) => ({
+                      ...p,
+                      current_offer: e.target.value,
+                    }))
+                  }
+                  placeholder="Ej. Descuento early-bird summer program"
+                  className={inputCls}
+                />
+              </Field>
+
+              <Field label="Notas adicionales">
+                <textarea
+                  value={profile.extra_notes}
+                  onChange={(e) =>
+                    setProfile((p) => ({ ...p, extra_notes: e.target.value }))
+                  }
+                  placeholder="Cualquier contexto extra: eventos próximos, colaboraciones, restricciones, etc."
+                  rows={4}
+                  className={`${inputCls} leading-relaxed resize-y`}
+                />
+              </Field>
+            </div>
+          </Section>
+        )}
 
         {/* e) ESTILOS SIGNATURE */}
         <Section title="Estilos signature">
