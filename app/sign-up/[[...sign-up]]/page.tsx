@@ -2,7 +2,7 @@ import Link from "next/link";
 import { SignUp } from "@clerk/nextjs";
 
 const PRIMO_LOGO_URL =
-  "https://res.cloudinary.com/dsprn0ew4/image/upload/v1778810517/replicame_ese_logo_sin_a%C3%B1adir_202605142001_xo3xpe.jpg";
+  "/media/replicame-ese-logo-sin-a-c3-b1adir-202605142001-xo3xpe.jpg";
 
 export default function Page() {
   return (
